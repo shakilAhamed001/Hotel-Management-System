@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -16,11 +17,15 @@ import javafx.stage.Stage;
  */
 public class HotelManagementSystem extends Application {
     
+    private double x = 0;
+      private double y = 0;
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
+        
+        stage.initStyle(StageStyle.TRANSPARENT);
         
         stage.setScene(scene);
         stage.show();
