@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -13,41 +12,40 @@
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hotel.management.system.FXMLDocumentController">
    <children>
-      <AnchorPane prefHeight="414.0" prefWidth="600.0">
+      <AnchorPane prefHeight="414.0" prefWidth="600.0" styleClass="white-bg" stylesheets="@LoginDesign.css">
          <children>
             <AnchorPane prefHeight="418.0" prefWidth="300.0" style="-fx-background-color: #5480BA;">
                <children>
-                  <ImageView fitHeight="183.0" fitWidth="200.0" layoutX="39.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../image/building.png" />
-                     </image>
-                  </ImageView>
                   <Label layoutX="71.0" layoutY="249.0" prefHeight="30.0" prefWidth="143.0" text="Nilima Seaside">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
+                  <ImageView fitHeight="169.0" fitWidth="187.0" layoutX="48.0" layoutY="68.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/building.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
             <AnchorPane layoutX="300.0" prefHeight="418.0" prefWidth="300.0" style="-fx-background-color: #B55395;">
                <children>
-                  <FontAwesomeIconView fill="#abd76e" glyphName="USER" layoutX="116.0" layoutY="123.0" size="6em" />
-                  <Label layoutX="109.0" layoutY="128.0" prefHeight="18.0" prefWidth="81.0" text="Sign in " textFill="WHITE">
+                  <Label layoutX="109.0" layoutY="144.0" prefHeight="18.0" prefWidth="81.0" text="Sign in " textFill="WHITE">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="user1" layoutX="67.0" layoutY="166.0" promptText="UserName" style="-fx-background-color: #ffffff;" />
-                  <PasswordField fx:id="pass1" layoutX="67.0" layoutY="216.0" promptText="Password" style="-fx-background-color: #ffffff;" />
-                  <Button fx:id="login1" layoutX="111.0" layoutY="284.0" mnemonicParsing="false" onAction="#Login" prefHeight="30.0" prefWidth="73.0" style="-fx-background-color: #abd76e;" text="Login">
+                  <TextField fx:id="user1" layoutX="67.0" layoutY="192.0" promptText="UserName" style="-fx-background-color: #ffffff;" styleClass="textfield" stylesheets="@LoginDesign.css" />
+                  <PasswordField fx:id="pass1" layoutX="67.0" layoutY="236.0" promptText="Password" style="-fx-background-color: #ffffff;" styleClass="textfield" stylesheets="@LoginDesign.css" />
+                  <Button fx:id="login1" layoutX="111.0" layoutY="284.0" mnemonicParsing="false" onAction="#Login" prefHeight="30.0" prefWidth="73.0" style="-fx-background-color: #abd76e;" styleClass="login-btn" stylesheets="@LoginDesign.css" text="Login">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Button>
-                  <Button fx:id="close" layoutX="246.0" layoutY="2.0" minWidth="31.0" mnemonicParsing="false" onAction="#Close" prefHeight="26.0" prefWidth="43.0">
-                     <graphic>
-                        <FontAwesomeIconView glyphName="CLOSE" />
-                     </graphic>
-                  </Button>
+                  <ImageView fitHeight="74.0" fitWidth="73.0" layoutX="100.0" layoutY="74.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/user-icon-1024x1024-unb6q333.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
          </children>
