@@ -46,7 +46,7 @@ public class FXMLDocumentController implements Initializable {
         String password = pass1.getText();
 
        
-        if (username.equals("user") && password.equals("pass")) { 
+        if (username.equals("shakil") && password.equals("1234")) { 
             openNewWindow(); // This method is called to open the new window
             // Close the current login window if desired
             ((Stage)(((javafx.scene.control.Button)event.getSource()).getScene().getWindow())).close();
@@ -75,9 +75,14 @@ public class FXMLDocumentController implements Initializable {
         
     }
 
-    private void showAlert(String error, String could_not_load_the_dashboard_window, Alert.AlertType alertType) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   private void showAlert(String title, String message, Alert.AlertType alertType) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+}
+
 
 
     
