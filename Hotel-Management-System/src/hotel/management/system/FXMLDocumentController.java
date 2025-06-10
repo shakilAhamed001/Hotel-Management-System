@@ -4,6 +4,7 @@
  */
 package hotel.management.system;
 
+import java.sql.Connection;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,10 +16,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  *
@@ -33,57 +37,80 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button login1;
 
-    
+    private Connection connect;
+    private PreparedStatement prepare;
+    private ResultSet result;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
 
-    @FXML
+     @FXML
     private void Login(ActionEvent event) {
-         String username = user1.getText();
+        try {
+            login(event); // Call database login method
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Login failed: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
+    private void login(ActionEvent event) throws SQLException, IOException {
+        String username = user1.getText();
         String password = pass1.getText();
 
-       
-        if (username.equals("shakil") && password.equals("1234")) { 
-            openNewWindow(); // This method is called to open the new window
-            // Close the current login window if desired
-            ((Stage)(((javafx.scene.control.Button)event.getSource()).getScene().getWindow())).close();
-        } else {
-            // Failed login
-            showAlert("Login Failed", "Invalid username or password.", Alert.AlertType.ERROR);
-        }
-    }
+        String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
+        connect = database.connectDb();
 
-    private void openNewWindow() {
         try {
-            // Load the FXML for the new window
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml")); // Make sure this path is correct
-            Parent root = loader.load();
+            prepare = connect.prepareStatement(sql);
+            prepare.setString(1, username);
+            prepare.setString(2, password);
 
-            // Create a new stage (window)
-            Stage stage = new Stage();
-            stage.setTitle("Nilima Seaside - Dashboard"); // Set the title for the new window
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error", "Could not load the dashboard window.", Alert.AlertType.ERROR);
+            result = prepare.executeQuery();
+            Alert alert;
+
+            if (result.next()) {
+                // Successful login
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Information Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully Logged In");
+                alert.showAndWait();
+
+                // Open Dashboard window
+                Parent root = FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Nilima Seaside - Dashboard");
+                stage.show();
+
+                // Close login window
+                ((Stage)((Button)event.getSource()).getScene().getWindow()).close();
+
+            } else {
+                // Wrong credentials
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Login Failed");
+                alert.setHeaderText(null);
+                alert.setContentText("Wrong username or password.");
+                alert.showAndWait();
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException("Database error: " + e.getMessage());
         }
-        
-        
     }
 
-   private void showAlert(String title, String message, Alert.AlertType alertType) {
-    Alert alert = new Alert(alertType);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(message);
-    alert.showAndWait();
+    private void showAlert(String title, String message, AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
+  
 
 
-
-    
-}
