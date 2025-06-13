@@ -70,6 +70,15 @@ public class FXMLDocumentController implements Initializable {
 
             result = prepare.executeQuery();
             Alert alert;
+            
+            if(username.isEmpty() && password.isEmpty()){
+                
+                 alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill all blank feilds");
+                alert.showAndWait();
+            }else{
 
             if (result.next()) {
                 // Successful login
@@ -96,6 +105,7 @@ public class FXMLDocumentController implements Initializable {
                 alert.setHeaderText(null);
                 alert.setContentText("Wrong username or password.");
                 alert.showAndWait();
+            }
             }
 
         } catch (SQLException e) {
