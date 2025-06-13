@@ -71,7 +71,7 @@ public class FXMLDocumentController implements Initializable {
             result = prepare.executeQuery();
             Alert alert;
             
-            if(username.isEmpty() && password.isEmpty()){
+            if(username.isEmpty() || password.isEmpty()){
                 
                  alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Message");
