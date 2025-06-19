@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
@@ -21,14 +20,12 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="169.0" fitWidth="187.0" layoutX="48.0" layoutY="68.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/building.png" />
-                     </image>
-                  </ImageView>
+                  <FontAwesomeIcon glyphName="BUILDING" layoutX="71.0" layoutY="204.0" size="12em" />
+                  <FontAwesomeIcon glyphName="TREE" layoutX="200.0" layoutY="213.0" size="5em" />
+                  <FontAwesomeIcon glyphName="TREE" layoutX="11.0" layoutY="215.0" size="5em" />
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="300.0" prefHeight="418.0" prefWidth="300.0" style="-fx-background-color: #B55395;">
+            <AnchorPane layoutX="299.0" layoutY="1.0" prefHeight="418.0" prefWidth="300.0" style="-fx-background-color: #B55395;">
                <children>
                   <Label layoutX="109.0" layoutY="144.0" prefHeight="18.0" prefWidth="81.0" text="Sign in " textFill="WHITE">
                      <font>
@@ -41,11 +38,7 @@
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Button>
-                  <ImageView fitHeight="74.0" fitWidth="73.0" layoutX="100.0" layoutY="74.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/user-icon-1024x1024-unb6q333.png" />
-                     </image>
-                  </ImageView>
+                  <FontAwesomeIcon glyphName="USERS" layoutX="98.0" layoutY="126.0" size="5em" wrappingWidth="32.25" />
                </children>
             </AnchorPane>
          </children>

@@ -2,6 +2,22 @@
  * Empty Stylesheet file.
  */
 
-.mainFxmlClass {
-
+.top-form{
+    
+    -fx-background-color:#fff;
+    -fx-border-color: #000;
+    -fx-border-width:.4px .4px .3px .4px;
+    
+}
+.nav-form{
+    
+    -fx-background-color: linear-gradient(to bottom right, #2f3f89, #9231b5);
+}
+.nav-btn{
+    
+    -fx-background-color: transparent;
+    -fx-cursor:hand;
+    -fx-text-fill: #fff;
+    -fx-font-size:14px;
+    -fx-font-family: "Arial";
 }
