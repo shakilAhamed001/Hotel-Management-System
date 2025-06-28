@@ -13,7 +13,7 @@
    <children>
       <AnchorPane prefHeight="414.0" prefWidth="600.0" styleClass="white-bg" stylesheets="@LoginDesign.css">
          <children>
-            <AnchorPane prefHeight="418.0" prefWidth="300.0" style="-fx-background-color: #5480BA;">
+            <AnchorPane layoutY="2.0" prefHeight="418.0" prefWidth="300.0" style="-fx-background-color: #5480BA;">
                <children>
                   <Label layoutX="71.0" layoutY="249.0" prefHeight="30.0" prefWidth="143.0" text="Nilima Seaside">
                      <font>

@@ -9,6 +9,9 @@
     -fx-border-width:.4px .4px .3px .4px;
     
 }
+.main-top-form{
+    -fx-background-color: #ddd;
+}
 .nav-form{
     
     -fx-background-color: linear-gradient(to bottom right, #2f3f89, #9231b5);
@@ -18,6 +21,29 @@
     -fx-background-color: transparent;
     -fx-cursor:hand;
     -fx-text-fill: #fff;
-    -fx-font-size:14px;
+    -fx-font-size:15px;
     -fx-font-family: "Arial";
+    -fx-alignment: CENTER_LEFT
+}
+
+.logout-btn{
+    -fx-background-color: #6a5fff;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
+}
+.logout-btn:hover{
+    -fx-background-color: #8c84ff;
+}
+
+.white-bg{
+    -fx-background-color: #fff;
+    -fx-background-radius: 10px;
+    
+}
+.shadow{
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 4,0,0,0);
+}
+
+.card{
+    -fx-background-color: linear-gradient(to right, #444857, #537e90);
 }
