@@ -64,3 +64,146 @@
     -fx-background-color:#efefef;
 }
 
+.textfield{
+    -fx-background-color: #fff;
+    -fx-border-color: linear-gradient(to right, #444857,#537e90);
+    -fx-border-width: 0px 0px .8px 0px;
+    -fx-font-size:13px;
+    -fx-font-family:"Tahoma";
+}
+
+.textfield:focused{
+     -fx-border-color: linear-gradient(to bottom right, #2f3f89,#9231b5);
+    -fx-border-width: 0px 0px 1.5px 0px;
+}
+
+.combo-box{
+    
+    -fx-background-color: #fff;
+    -fx-background-radius: 5px;
+     -fx-border-color: linear-gradient(to right, #444857,#537e90);
+     -fx-border-width: .8px;
+     -fx-border-radius: .5px;
+     -fx-font-size:13px;
+     -fx-font-family:"Tahoma";
+    
+}
+.combo-box:focused{
+    -fx-border-color: linear-gradient(to bottom right, #2f3f89,#9231b5);
+    -fx-border-width:1.5px ;
+    
+}
+
+.add-btn{
+    
+    -fx-background-color: #3e608c;
+    -fx-background-radius:8px;
+    -fx-cursor:hand;
+    -fx-text-fill:#fff;
+    -fx-font-size:14px;
+    -fx-font-family:"Tahoma";
+}
+
+.add-btn:hover{
+    -fx-background-color: #6597d3;
+    
+}
+
+.update-btn{
+    
+    -fx-background-color: #754186;
+    -fx-background-radius:8px;
+    -fx-cursor:hand;
+    -fx-text-fill:#fff;
+    -fx-font-size:14px;
+    -fx-font-family:"Tahoma";
+}
+
+.update-btn:hover{
+    
+    -fx-background-color: #c375dd;
+}
+
+.delete-btn{
+    -fx-background-color: #754186;
+    -fx-background-radius:8px;
+    -fx-cursor:hand;
+    -fx-text-fill:#fff;
+    -fx-font-size:14px;
+    -fx-font-family:"Tahoma";
+}
+.delete-btn:hover{
+    
+      -fx-background-color: #e4567e;
+}
+
+.clear-btn{
+     -fx-background-color: #754186;
+    -fx-background-radius:8px;
+    -fx-cursor:hand;
+    -fx-text-fill:#fff;
+    -fx-font-size:14px;
+    -fx-font-family:"Tahoma";
+    
+}
+
+.clear-btn:hover{
+   -fx-background-color: #e49c7b; 
+}
+
+.check-in-btn{
+    
+     -fx-background-color: #468090;
+    -fx-background-radius:8px;
+    -fx-cursor:hand;
+    -fx-text-fill:#fff;
+    -fx-font-size:14px;
+    -fx-font-family:"Tahoma";
+}
+
+.check-in-btn:hover{
+    
+    -fx-background-color: #6ec1d6; 
+}
+
+.table-view{
+    
+    -fx-background-color: transparent;
+    -fx-padding: 0px;
+    -fx-border-color: linear-gradient(to bottom right, #2f3f89,#9231b5);
+    -fx-border-radius:8px;
+}
+
+.table-view .column-header-background{
+    
+        -fx-border-color: linear-gradient(to bottom right,#2f3f89,#9231b5);
+        -fx-background-insets: 0 0 0 0;
+}
+
+.table-view .column-header, .filter{
+    
+    -fx-background-color: transparent;
+    -fx-size:50px;
+}
+
+.table-view .column-header .label{
+    
+  
+}
+
+.search{
+    
+    -fx-background-color: transparent;
+     -fx-border-radius:15px;
+    -fx-border-color: linear-gradient(to bottom right,#2f3f89,#9231b5);
+    -fx-border-radius:5px 12px 5px 5px;
+    -fx-border-width: 1px;
+    -fx-padding: 0px 0px 0px 25px;
+    
+}
+
+.search:focused{
+    -fx-border-width: 1.8px;
+    
+}
+
