@@ -4,7 +4,10 @@
  */
 package hotel.management.system;
 
+import com.mysql.jdbc.Statement;
+import java.sql.Connection;
 import java.net.URL;
+import java.sql.DriverManager;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,6 +19,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javafx.scene.control.Alert;
 
 /**
  * FXML Controller class
@@ -102,9 +108,72 @@ public class DashboardController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    
+    private Connection connect;
+    private PreparedStatement prepare;
+    private Statement statement;
+    private ResultSet result;
+    
+    
+    @FXML
+    public void availableRoomAdd(){
+        String sql = "INSERT INTO room (roomNumber,type,status,price) VALUES(?,?,?,?)";
+      connect = database.connectDb();
+      
+       try{
+            String roomNumber = available_roomNumber.getText();
+         String type = (String)availableRoom_type.getSelectionModel().getSelectedItem();
+        String status =  (String)availableRoom_status.getSelectionModel().getSelectedItem();
+       String price = availableRoom_price.getText();
+       
+       prepare = connect.prepareStatement(sql);
+       
+       prepare.setString(1, roomNumber);
+       prepare.setString(2, type);
+       prepare.setString(3, status);
+       prepare.setString(4, price);
+       
+       Alert alert;
+       
+       if(roomNumber.isEmpty() || type.isEmpty() || status.isEmpty() || price.isEmpty() ){
+          alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill all blank feilds");
+                alert.showAndWait();
+       
+       } else{
+        prepare = connect.prepareStatement(sql);
+       
+       prepare.setString(1, roomNumber);
+       prepare.setString(2, type);
+       prepare.setString(3, status);
+       prepare.setString(4, price);
+       
+       prepare.executeUpdate();
+       
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                   alert.setTitle("Information Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Succesfully added");
+                alert.showAndWait();
+   
+       
+       }
+       }
+       
+       
+       catch(Exception e){e.printStackTrace();
+       
+       }
+ 
+    
+    
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+       
+    }
     
 }
+    

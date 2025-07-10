@@ -17,20 +17,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
       -fx-border_width:.4px .4px .4px 0px;
 
 }
-.textfield{
-    
-    -fx-background-color:transparent;
-    -fx-border-color:#3f3951;
-    -fx-border-width:0px 0px .8px 0px;
-    -fx-font-size:13px;
-    -fx-font-family:"Tahoma";
-}
 
-.textfield:focused{
+
     
-    -fx-border-color:linear-gradient(to bottom right, #2f3f89,#9231b5);
-    -fx-border-width:0px 0px 1.5px 0px;
-}
+   
 
 .login-btn{
     

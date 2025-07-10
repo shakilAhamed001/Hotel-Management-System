@@ -41,6 +41,7 @@ public class FXMLDocumentController implements Initializable {
     private PreparedStatement prepare;
     private ResultSet result;
     
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO

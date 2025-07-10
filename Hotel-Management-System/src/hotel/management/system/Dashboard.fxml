@@ -174,7 +174,7 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="availableRoom_RoomFrom" layoutX="133.0" layoutY="14.0" prefHeight="556.0" prefWidth="904.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="availableRoom_RoomFrom" layoutX="133.0" layoutY="14.0" prefHeight="556.0" prefWidth="904.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane layoutX="45.0" layoutY="23.0" prefHeight="483.0" prefWidth="245.0" stylesheets="@dashboard.css">
                                        <children>
@@ -186,7 +186,7 @@
                                           <Label layoutX="23.0" layoutY="157.0" prefHeight="28.0" prefWidth="60.0" text="Status:" />
                                           <Label layoutX="23.0" layoutY="214.0" prefHeight="28.0" prefWidth="60.0" text="Price:" />
                                           <TextField fx:id="availableRoom_price" layoutX="87.0" layoutY="216.0" prefHeight="26.0" prefWidth="139.0" styleClass="textfield" stylesheets="@dashboard.css" />
-                                          <Button fx:id="availableRoom_addbtn" layoutX="27.0" layoutY="286.0" mnemonicParsing="false" styleClass="add-btn" stylesheets="@dashboard.css" text="Add" />
+                                          <Button fx:id="availableRoom_addbtn" layoutX="27.0" layoutY="286.0" mnemonicParsing="false" onAction="#availableRoomAdd" styleClass="add-btn" stylesheets="@dashboard.css" text="Add" />
                                           <Button fx:id="availableRoom_updatebtn" layoutX="148.0" layoutY="286.0" mnemonicParsing="false" styleClass="update-btn" stylesheets="@dashboard.css" text="Update" />
                                           <Button fx:id="availableRoom_deletebtn" layoutX="27.0" layoutY="337.0" mnemonicParsing="false" styleClass="delete-btn" stylesheets="@dashboard.css" text="Delete" />
                                           <Button fx:id="availableRoom_clearbtn" layoutX="149.0" layoutY="337.0" mnemonicParsing="false" styleClass="clear-btn" stylesheets="@dashboard.css" text="Clear" />
@@ -221,7 +221,7 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="customer_From" layoutX="31.0" layoutY="14.0" prefHeight="556.0" prefWidth="895.0" stylesheets="@dashboard.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="customer_From" layoutX="31.0" layoutY="14.0" prefHeight="556.0" prefWidth="895.0" stylesheets="@dashboard.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane layoutX="64.0" layoutY="13.0" prefHeight="533.0" prefWidth="831.0">
                                        <children>
