@@ -12,10 +12,10 @@
 .main-top-form{
     -fx-background-color: #ddd;
 }
-.nav-form{
-    
-    -fx-background-color: linear-gradient(to bottom right, #2f3f89, #9231b5);
+.nav-form {
+    -fx-background-color: linear-gradient(to bottom right, #FFA736, #32CD32);
 }
+
 .nav-btn{
     
     -fx-background-color: transparent;

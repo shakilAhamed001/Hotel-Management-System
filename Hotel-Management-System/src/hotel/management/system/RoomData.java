@@ -25,7 +25,7 @@ public class RoomData {
     
     }
     
-    public Integer getRoomNUmber(){
+    public Integer getRoomNumber(){
         
      return roomNumber;
     

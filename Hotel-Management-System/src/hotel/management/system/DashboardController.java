@@ -21,7 +21,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import javafx.scene.control.Alert;
+import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+
 
 /**
  * FXML Controller class
@@ -30,6 +37,9 @@ import javafx.scene.control.Alert;
  */
 public class DashboardController implements Initializable {
 
+    
+        @FXML
+    private AnchorPane main_form;
     @FXML
     private Button closebtn;
     @FXML
@@ -75,15 +85,15 @@ public class DashboardController implements Initializable {
     @FXML
     private TextField availableRoom_search;
     @FXML
-    private TableView<?> availableRoom_tableView;
+    private TableView<RoomData> availableRoom_tableView;
     @FXML
-    private TableColumn<?, ?> availableRoom_RoomNumber;
+    private TableColumn<RoomData, Integer> availableRoom_RoomNumber;
     @FXML
-    private TableColumn<?, ?> availableRoom_RoomType;
+    private TableColumn<RoomData, String> availableRoom_RoomType;
     @FXML
-    private TableColumn<?, ?> availableRoom_RoomStatus;
+    private TableColumn<RoomData, String> availableRoom_RoomStatus;
     @FXML
-    private TableColumn<?, ?> availableRoom_RoomPrice;
+    private TableColumn<RoomData, String> availableRoom_RoomPrice;
     @FXML
     private AnchorPane customer_From;
     @FXML
@@ -115,13 +125,57 @@ public class DashboardController implements Initializable {
     private ResultSet result;
     
     
+    
+    public ObservableList<RoomData> availableRoomsListData(){
+    
+    ObservableList<RoomData> listData = FXCollections.observableArrayList();
+    
+    String sql = "SELECT * FROM room";
+    
+    connect = database.connectDb();
+    
+    try{
+        
+        RoomData roomD;
+        prepare = connect.prepareStatement(sql);
+        
+        result = prepare.executeQuery();
+        
+        while(result.next()){
+            roomD = new RoomData(result.getInt("roomNumber"),
+                    result.getString("type"), 
+                    result.getString("status"), 
+                    result.getDouble("price"));
+            
+            listData.add(roomD);
+            
+        }
+        
+    }catch(Exception e){e.printStackTrace();}
+    return listData;
+    }
+    
+    private ObservableList<RoomData> roomDataList;
+    public void availableRoomsShowData(){
+    
+    roomDataList = availableRoomsListData();
+    availableRoom_RoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
+    availableRoom_RoomType.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+    availableRoom_RoomStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+    availableRoom_RoomPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+    
+    availableRoom_tableView.setItems(roomDataList);
+    
+    
+    }
+    
     @FXML
     public void availableRoomAdd(){
         String sql = "INSERT INTO room (roomNumber,type,status,price) VALUES(?,?,?,?)";
       connect = database.connectDb();
       
        try{
-            String roomNumber = available_roomNumber.getText();
+            String roomNumber = (String)available_roomNumber.getText();
          String type = (String)availableRoom_type.getSelectionModel().getSelectedItem();
         String status =  (String)availableRoom_status.getSelectionModel().getSelectedItem();
        String price = availableRoom_price.getText();
@@ -157,23 +211,90 @@ public class DashboardController implements Initializable {
                 alert.setHeaderText(null);
                 alert.setContentText("Succesfully added");
                 alert.showAndWait();
+                
+                
+                availableRoomsShowData();
+                availableRoomsClear();
    
-       
        }
        }
-       
        
        catch(Exception e){e.printStackTrace();
        
        }
- 
+    }
     
+  
+   
+    
+    @FXML
+    public void availableRoomsClear(){
+        
+        available_roomNumber.setText("");
+        availableRoom_type.getSelectionModel().clearSelection();
+         availableRoom_status.getSelectionModel().clearSelection();
+        availableRoom_price.setText("");
+        
     
     }
+    
+       
+       private String type[] 
+               = {"Single Room","Double Room", "Triple Room", "Quad Room", "King Room" };
+       
+    @FXML
+       public void availableRoomsRoomType(){
+       
+       List<String> listData = new ArrayList<>();
+       for(String data : type){
+       
+          listData.add(data); 
+       }
+       
+       ObservableList list = FXCollections.observableArrayList(listData);
+               availableRoom_type.setItems(list);
+       }
+        private String status[] 
+               = {"Available","Not Available", "Occupied"};
+    @FXML
+       public void availableRoomsStatus(){
+       
+       List<String> listData = new ArrayList<>();
+       for(String data : status){
+       
+          listData.add(data); 
+       }
+       
+       ObservableList list = FXCollections.observableArrayList(listData);
+               availableRoom_status.setItems(list);
+       }
+       
+       public void close(){
+       
+       System.exit(0);
+       
+       }
+       
+       public void minimize(){
+       Stage stage = (Stage)main_form.getScene().getWindow();
+       stage.setIconified(true);
+       }
+       
+       
+
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
        
+        
+        availableRoomsRoomType();
+        availableRoomsStatus();
+        availableRoomsShowData();
+        
     }
-    
 }
+
+
+    
+
     

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXML2.java to edit this template
- */
 package hotel.management.system;
 
 import java.sql.Connection;
@@ -23,11 +19,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.StageStyle;
+import javafx.scene.input.MouseEvent;
 
-/**
- *
- * @author PC
- */
 public class FXMLDocumentController implements Initializable {
 
     @FXML
@@ -36,21 +30,25 @@ public class FXMLDocumentController implements Initializable {
     private PasswordField pass1;
     @FXML
     private Button login1;
+    @FXML
+    private Button cl;
 
     private Connection connect;
     private PreparedStatement prepare;
     private ResultSet result;
-    
-    
+
+    private double x = 0;
+    private double y = 0;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        // Initialization if needed
+    }
 
-     @FXML
+    @FXML
     private void Login(ActionEvent event) {
         try {
-            login(event); // Call database login method
+            login(event);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             showAlert("Error", "Login failed: " + e.getMessage(), AlertType.ERROR);
@@ -61,6 +59,11 @@ public class FXMLDocumentController implements Initializable {
         String username = user1.getText();
         String password = pass1.getText();
 
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert("Error", "Please fill all blank fields", AlertType.ERROR);
+            return;
+        }
+
         String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
         connect = database.connectDb();
 
@@ -68,49 +71,43 @@ public class FXMLDocumentController implements Initializable {
             prepare = connect.prepareStatement(sql);
             prepare.setString(1, username);
             prepare.setString(2, password);
-
             result = prepare.executeQuery();
-            Alert alert;
-            
-            if(username.isEmpty() || password.isEmpty()){
-                
-                 alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error Message");
-                alert.setHeaderText(null);
-                alert.setContentText("Please fill all blank feilds");
-                alert.showAndWait();
-            }else{
 
             if (result.next()) {
-                // Successful login
-                alert = new Alert(AlertType.INFORMATION);
-                alert.setTitle("Information Message");
-                alert.setHeaderText(null);
-                alert.setContentText("Successfully Logged In");
-                alert.showAndWait();
+                showAlert("Success", "Successfully Logged In", AlertType.INFORMATION);
 
-                // Open Dashboard window
                 Parent root = FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
                 Stage stage = new Stage();
-                stage.setScene(new Scene(root));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+
+                // Allow window dragging
+                root.setOnMousePressed((MouseEvent e) -> {
+                    x = e.getSceneX();
+                    y = e.getSceneY();
+                });
+
+                root.setOnMouseDragged((MouseEvent e) -> {
+                    stage.setX(e.getScreenX() - x);
+                    stage.setY(e.getScreenY() - y);
+                });
+
+                stage.initStyle(StageStyle.TRANSPARENT);
                 stage.setTitle("Nilima Seaside - Dashboard");
                 stage.show();
 
-                // Close login window
-                ((Stage)((Button)event.getSource()).getScene().getWindow()).close();
-
+                // Close current login window
+                ((Stage) ((Button) event.getSource()).getScene().getWindow()).close();
             } else {
-                // Wrong credentials
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Login Failed");
-                alert.setHeaderText(null);
-                alert.setContentText("Wrong username or password.");
-                alert.showAndWait();
+                showAlert("Login Failed", "Wrong username or password.", AlertType.ERROR);
             }
-            }
-
         } catch (SQLException e) {
             throw new SQLException("Database error: " + e.getMessage());
+        } finally {
+            // Clean up resources
+            if (result != null) result.close();
+            if (prepare != null) prepare.close();
+            if (connect != null) connect.close();
         }
     }
 
@@ -121,7 +118,10 @@ public class FXMLDocumentController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+    private void CLOSE(ActionEvent event) {
+        Stage stage = (Stage) cl.getScene().getWindow();
+        stage.close();
+    }
 }
-  
-
-
