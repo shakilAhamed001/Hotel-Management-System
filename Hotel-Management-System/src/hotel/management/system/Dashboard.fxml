@@ -190,7 +190,7 @@
                                           <Button fx:id="availableRoom_updatebtn" layoutX="148.0" layoutY="286.0" mnemonicParsing="false" onAction="#availableRoomsUpadte" styleClass="update-btn" stylesheets="@dashboard.css" text="Update" />
                                           <Button fx:id="availableRoom_deletebtn" layoutX="27.0" layoutY="337.0" mnemonicParsing="false" onAction="#availableRoomsDelete" styleClass="delete-btn" stylesheets="@dashboard.css" text="Delete" />
                                           <Button fx:id="availableRoom_clearbtn" layoutX="149.0" layoutY="337.0" mnemonicParsing="false" onAction="#availableRoomsClear" prefHeight="32.0" prefWidth="60.0" styleClass="clear-btn" stylesheets="@dashboard.css" text="Clear" />
-                                          <Button fx:id="availableRoom_checkbtn" layoutX="84.0" layoutY="408.0" mnemonicParsing="false" styleClass="check-in-btn" stylesheets="@dashboard.css" text="Check-In" />
+                                          <Button fx:id="availableRoom_checkbtn" layoutX="84.0" layoutY="408.0" mnemonicParsing="false" onAction="#availableRoomsCheckIn" styleClass="check-in-btn" stylesheets="@dashboard.css" text="Check-In" />
                                        </children>
                                        <styleClass>
                                           <String fx:value="white-bg" />

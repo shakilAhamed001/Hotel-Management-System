@@ -4,7 +4,6 @@
  */
 package hotel.management.system;
 
-
 import java.sql.Connection;
 import java.net.URL;
 import java.sql.DriverManager;
@@ -37,8 +36,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import static javafx.stage.StageStyle.TRANSPARENT;
 import java.sql.Statement;
-
-
 
 /**
  * FXML Controller class
@@ -275,7 +272,7 @@ public class DashboardController implements Initializable {
         try {
 
             Alert alert;
-            if (type1== null|| status1== null || price1== null || roomNum== null) {
+            if (type1 == null || status1 == null || price1 == null || roomNum == null) {
 
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Message");
@@ -340,9 +337,9 @@ public class DashboardController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("Successfuly Delete");
                     alert.showAndWait();
-                    
-                     availableRoomsShowData();
-                     availableRoomsClear();
+
+                    availableRoomsShowData();
+                    availableRoomsClear();
                 } else {
                     return;
                 }
@@ -361,6 +358,39 @@ public class DashboardController implements Initializable {
         availableRoom_type.getSelectionModel().clearSelection();
         availableRoom_status.getSelectionModel().clearSelection();
         availableRoom_price.setText("");
+
+    }
+
+    public void availableRoomsCheckIn() {
+
+        try {
+
+            Parent root = FXMLLoader.load(getClass().getResource("checkIn.fxml"));
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            root.setOnMousePressed((MouseEvent event) -> {
+                x = event.getSceneX();
+                y = event.getSceneY();
+            });
+            root.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getSceneX() - x);
+                stage.setY(event.getSceneY() - y);
+                stage.setOpacity(.8);
+                
+            });
+            
+             root.setOnMouseReleased((MouseEvent event) -> {
+                stage.setOpacity(1);
+            });
+
+            stage.initStyle(TRANSPARENT);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -418,7 +448,7 @@ public class DashboardController implements Initializable {
                     x = event.getSceneX();
                     y = event.getSceneY();
                 });
-                root.setOnMousePressed((MouseEvent event) -> {
+                root.setOnMouseDragged((MouseEvent event) -> {
                     stage.setX(event.getSceneX() - x);
                     stage.setY(event.getSceneY() - y);
                 });
