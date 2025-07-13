@@ -4,7 +4,7 @@
  */
 package hotel.management.system;
 
-import com.mysql.jdbc.Statement;
+
 import java.sql.Connection;
 import java.net.URL;
 import java.sql.DriverManager;
@@ -24,10 +24,20 @@ import java.sql.ResultSet;
 import java.util.List;
 import javafx.scene.control.Alert;
 import java.util.ArrayList;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import static javafx.stage.StageStyle.TRANSPARENT;
+import java.sql.Statement;
+
 
 
 /**
@@ -37,8 +47,7 @@ import javafx.stage.Stage;
  */
 public class DashboardController implements Initializable {
 
-    
-        @FXML
+    @FXML
     private AnchorPane main_form;
     @FXML
     private Button closebtn;
@@ -118,183 +127,334 @@ public class DashboardController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    
     private Connection connect;
     private PreparedStatement prepare;
     private Statement statement;
     private ResultSet result;
-    
-    
-    
-    public ObservableList<RoomData> availableRoomsListData(){
-    
-    ObservableList<RoomData> listData = FXCollections.observableArrayList();
-    
-    String sql = "SELECT * FROM room";
-    
-    connect = database.connectDb();
-    
-    try{
-        
-        RoomData roomD;
-        prepare = connect.prepareStatement(sql);
-        
-        result = prepare.executeQuery();
-        
-        while(result.next()){
-            roomD = new RoomData(result.getInt("roomNumber"),
-                    result.getString("type"), 
-                    result.getString("status"), 
-                    result.getDouble("price"));
-            
-            listData.add(roomD);
-            
+
+    public ObservableList<RoomData> availableRoomsListData() {
+
+        ObservableList<RoomData> listData = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM room";
+
+        connect = database.connectDb();
+
+        try {
+
+            RoomData roomD;
+            prepare = connect.prepareStatement(sql);
+
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                roomD = new RoomData(result.getInt("roomNumber"),
+                        result.getString("type"),
+                        result.getString("status"),
+                        result.getDouble("price"));
+
+                listData.add(roomD);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
-    }catch(Exception e){e.printStackTrace();}
-    return listData;
+        return listData;
     }
-    
+
     private ObservableList<RoomData> roomDataList;
-    public void availableRoomsShowData(){
-    
-    roomDataList = availableRoomsListData();
-    availableRoom_RoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
-    availableRoom_RoomType.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-    availableRoom_RoomStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-    availableRoom_RoomPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-    
-    availableRoom_tableView.setItems(roomDataList);
-    
-    
+
+    public void availableRoomsShowData() {
+
+        roomDataList = availableRoomsListData();
+        availableRoom_RoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
+        availableRoom_RoomType.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+        availableRoom_RoomStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        availableRoom_RoomPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        availableRoom_tableView.setItems(roomDataList);
+
     }
-    
+
+    public void availableRoomsSelectData() {
+
+        RoomData roomD = availableRoom_tableView.getSelectionModel().getSelectedItem();
+        int num = availableRoom_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+
+            return;
+        }
+        available_roomNumber.setText(String.valueOf(roomD.getRoomNumber()));
+        availableRoom_price.setText(String.valueOf(roomD.getPrice()));
+
+    }
+
     @FXML
-    public void availableRoomAdd(){
+    public void availableRoomAdd() {
         String sql = "INSERT INTO room (roomNumber,type,status,price) VALUES(?,?,?,?)";
-      connect = database.connectDb();
-      
-       try{
-            String roomNumber = (String)available_roomNumber.getText();
-         String type = (String)availableRoom_type.getSelectionModel().getSelectedItem();
-        String status =  (String)availableRoom_status.getSelectionModel().getSelectedItem();
-       String price = availableRoom_price.getText();
-       
-       prepare = connect.prepareStatement(sql);
-       
-       prepare.setString(1, roomNumber);
-       prepare.setString(2, type);
-       prepare.setString(3, status);
-       prepare.setString(4, price);
-       
-       Alert alert;
-       
-       if(roomNumber.isEmpty() || type.isEmpty() || status.isEmpty() || price.isEmpty() ){
-          alert = new Alert(Alert.AlertType.ERROR);
+        connect = database.connectDb();
+
+        try {
+            String roomNumber = (String) available_roomNumber.getText();
+            String type = (String) availableRoom_type.getSelectionModel().getSelectedItem();
+            String status = (String) availableRoom_status.getSelectionModel().getSelectedItem();
+            String price = availableRoom_price.getText();
+
+            prepare = connect.prepareStatement(sql);
+
+            prepare.setString(1, roomNumber);
+            prepare.setString(2, type);
+            prepare.setString(3, status);
+            prepare.setString(4, price);
+
+            Alert alert;
+
+            if (roomNumber == null || type == null || status == null || price == null) {
+                alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
                 alert.setContentText("Please fill all blank feilds");
                 alert.showAndWait();
-       
-       } else{
-        prepare = connect.prepareStatement(sql);
-       
-       prepare.setString(1, roomNumber);
-       prepare.setString(2, type);
-       prepare.setString(3, status);
-       prepare.setString(4, price);
-       
-       prepare.executeUpdate();
-       
+
+            } else {
+
+                String check = "SELECT roomNumber FROM room WHERE roomNumber = '" + roomNumber + "' ";
+
+                prepare = connect.prepareStatement(check);
+
+                result = prepare.executeQuery();
+
+                if (result.next()) {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Room #" + roomNumber + "was already exist!");
+                    alert.showAndWait();
+
+                } else {
+
+                    prepare = connect.prepareStatement(sql);
+
+                    prepare.setString(1, roomNumber);
+                    prepare.setString(2, type);
+                    prepare.setString(3, status);
+                    prepare.setString(4, price);
+
+                    prepare.executeUpdate();
+
                     alert = new Alert(Alert.AlertType.INFORMATION);
-                   alert.setTitle("Information Message");
+                    alert.setTitle("Information Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Succesfully added");
+                    alert.showAndWait();
+
+                    availableRoomsShowData();
+                    availableRoomsClear();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    public void availableRoomsUpadte() {
+
+        String type1 = (String) availableRoom_type.getSelectionModel().getSelectedItem();
+        String status1 = (String) availableRoom_status.getSelectionModel().getSelectedItem();
+        String price1 = availableRoom_price.getText();
+        String roomNum = available_roomNumber.getText();
+
+        String sql = "UPDATE room SET type = '" + type1 + "', status = '" + status1 + "', price ='" + price1
+                + "' WHERE roomNumber = '" + roomNum + "'";
+
+        connect = database.connectDb();
+        try {
+
+            Alert alert;
+            if (type1== null|| status1== null || price1== null || roomNum== null) {
+
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Succesfully added");
+                alert.setContentText("Please select the data First");
                 alert.showAndWait();
-                
-                
+
+            } else {
+                prepare = connect.prepareStatement(sql);
+                prepare.executeUpdate();
+
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("INFORMATION Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully Updated");
+                alert.showAndWait();
+
                 availableRoomsShowData();
                 availableRoomsClear();
-   
-       }
-       }
-       
-       catch(Exception e){e.printStackTrace();
-       
-       }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
-    
-  
-   
-    
+
+    public void availableRoomsDelete() {
+
+        String type1 = (String) availableRoom_type.getSelectionModel().getSelectedItem();
+        String status1 = (String) availableRoom_status.getSelectionModel().getSelectedItem();
+        String price1 = availableRoom_price.getText();
+        String roomNum = available_roomNumber.getText();
+
+        String deleteData = "DELETE FROM room WHERE roomNumber = '" + roomNum + "'";
+        connect = database.connectDb();
+
+        try {
+            Alert alert;
+
+            if (type1 == null || status1 == null || price1 == null || roomNum == null) {
+
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Confirmation Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please Select data first");
+                alert.showAndWait();
+            } else {
+
+                alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Are you sure you want to delete Room #" + roomNum + "?");
+
+                Optional<ButtonType> option = alert.showAndWait();
+                if (option.get().equals(ButtonType.OK)) {
+                    statement = connect.createStatement();
+                    statement.executeUpdate(deleteData);
+
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("INFORMATION Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Successfuly Delete");
+                    alert.showAndWait();
+                    
+                     availableRoomsShowData();
+                     availableRoomsClear();
+                } else {
+                    return;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @FXML
-    public void availableRoomsClear(){
-        
+    public void availableRoomsClear() {
+
         available_roomNumber.setText("");
         availableRoom_type.getSelectionModel().clearSelection();
-         availableRoom_status.getSelectionModel().clearSelection();
+        availableRoom_status.getSelectionModel().clearSelection();
         availableRoom_price.setText("");
-        
-    
-    }
-    
-       
-       private String type[] 
-               = {"Single Room","Double Room", "Triple Room", "Quad Room", "King Room" };
-       
-    @FXML
-       public void availableRoomsRoomType(){
-       
-       List<String> listData = new ArrayList<>();
-       for(String data : type){
-       
-          listData.add(data); 
-       }
-       
-       ObservableList list = FXCollections.observableArrayList(listData);
-               availableRoom_type.setItems(list);
-       }
-        private String status[] 
-               = {"Available","Not Available", "Occupied"};
-    @FXML
-       public void availableRoomsStatus(){
-       
-       List<String> listData = new ArrayList<>();
-       for(String data : status){
-       
-          listData.add(data); 
-       }
-       
-       ObservableList list = FXCollections.observableArrayList(listData);
-               availableRoom_status.setItems(list);
-       }
-       
-       public void close(){
-       
-       System.exit(0);
-       
-       }
-       
-       public void minimize(){
-       Stage stage = (Stage)main_form.getScene().getWindow();
-       stage.setIconified(true);
-       }
-       
-       
 
-    
+    }
+
+    private String type[]
+            = {"Single Room", "Double Room", "Triple Room", "Quad Room", "King Room"};
+
+    @FXML
+    public void availableRoomsRoomType() {
+
+        List<String> listData = new ArrayList<>();
+        for (String data : type) {
+
+            listData.add(data);
+        }
+
+        ObservableList list = FXCollections.observableArrayList(listData);
+        availableRoom_type.setItems(list);
+    }
+    private String status[]
+            = {"Available", "Not Available", "Occupied"};
+
+    @FXML
+    public void availableRoomsStatus() {
+
+        List<String> listData = new ArrayList<>();
+        for (String data : status) {
+
+            listData.add(data);
+        }
+
+        ObservableList list = FXCollections.observableArrayList(listData);
+        availableRoom_status.setItems(list);
+    }
+
+    private double x = 0;
+    private double y = 0;
+
+    public void logout() {
+
+        try {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure to Logout");
+
+            Optional<ButtonType> option = alert.showAndWait();
+
+            if (option.get().equals(ButtonType.OK)) {
+
+                Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+
+                root.setOnMousePressed((MouseEvent event) -> {
+                    x = event.getSceneX();
+                    y = event.getSceneY();
+                });
+                root.setOnMousePressed((MouseEvent event) -> {
+                    stage.setX(event.getSceneX() - x);
+                    stage.setY(event.getSceneY() - y);
+                });
+
+                stage.initStyle(TRANSPARENT);
+                stage.setScene(scene);
+                stage.show();
+
+                logout_btn.getScene().getWindow().hide();;
+            } else {
+                return;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void close() {
+
+        System.exit(0);
+
+    }
+
+    public void minimize() {
+        Stage stage = (Stage) main_form.getScene().getWindow();
+        stage.setIconified(true);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       
-        
+
         availableRoomsRoomType();
         availableRoomsStatus();
         availableRoomsShowData();
-        
+
     }
 }
-
-
-    
-
-    

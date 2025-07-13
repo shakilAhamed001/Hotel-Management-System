@@ -18,7 +18,7 @@
       <TextField fx:id="user1" layoutX="340.0" layoutY="175.0" prefHeight="26.0" prefWidth="129.0" promptText="UserName" style="-fx-background-color: #ffff;" styleClass="textfield" stylesheets="@LoginDesign.css" />
       <PasswordField fx:id="pass1" layoutX="341.0" layoutY="210.0" prefHeight="26.0" prefWidth="129.0" promptText="PassWord" style="-fx-background-color: #ffff;" />
       <Button fx:id="login1" layoutX="371.0" layoutY="253.0" mnemonicParsing="false" onAction="#Login" styleClass="login-btn" stylesheets="@LoginDesign.css" text="Login" />
-      <Button fx:id="cl" layoutX="549.0" layoutY="-2.0" minWidth="42.0" mnemonicParsing="false" onAction="#CLOSE" prefHeight="26.0" prefWidth="54.0" style="-fx-background-color: #FDBB2D;" styleClass="close" stylesheets="@dashboard.css">
+      <Button fx:id="cl" layoutX="546.0" layoutY="-2.0" minWidth="42.0" mnemonicParsing="false" onAction="#CLOSE" prefHeight="26.0" prefWidth="54.0" style="-fx-background-color: #FDBB2D;" styleClass="close" stylesheets="@dashboard.css">
          <graphic>
             <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" />
          </graphic>
