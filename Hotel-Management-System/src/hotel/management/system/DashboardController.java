@@ -36,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import static javafx.stage.StageStyle.TRANSPARENT;
 import java.sql.Statement;
+import static javafx.stage.StageStyle.DECORATED;
 
 /**
  * FXML Controller class
@@ -370,22 +371,10 @@ public class DashboardController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
 
-            root.setOnMousePressed((MouseEvent event) -> {
-                x = event.getSceneX();
-                y = event.getSceneY();
-            });
-            root.setOnMouseDragged((MouseEvent event) -> {
-                stage.setX(event.getSceneX() - x);
-                stage.setY(event.getSceneY() - y);
-                stage.setOpacity(.8);
-                
-            });
-            
-             root.setOnMouseReleased((MouseEvent event) -> {
-                stage.setOpacity(1);
-            });
+            stage.setMinHeight(400+15);
+            stage.setMinWidth(300+15);
 
-            stage.initStyle(TRANSPARENT);
+            stage.initStyle(DECORATED);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
