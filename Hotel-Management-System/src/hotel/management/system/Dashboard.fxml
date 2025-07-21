@@ -66,15 +66,15 @@
                                        </font>
                                     </Label>
                                     <Line endX="83.0" layoutX="115.0" layoutY="214.0" startX="-100.0" stroke="#eeeeee" />
-                                    <Button fx:id="dashboard_btn" layoutX="8.0" layoutY="230.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Dashboard" textFill="#974103">
+                                    <Button fx:id="dashboard_btn" layoutX="8.0" layoutY="230.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="146.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Dashboard" textFill="#974103">
                                        <graphic>
                                           <FontAwesomeIcon fill="WHITE" glyphName="DASHBOARD" size="1.2em" />
                                        </graphic></Button>
-                                    <Button fx:id="aroom_btn" layoutX="7.0" layoutY="263.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="176.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Available Rooms">
+                                    <Button fx:id="aroom_btn" layoutX="7.0" layoutY="263.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="176.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Available Rooms">
                                        <graphic>
                                           <FontAwesomeIcon fill="WHITE" glyphName="CHECK_CIRCLE" />
                                        </graphic></Button>
-                                    <Button fx:id="customer_btn" layoutX="7.0" layoutY="296.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Coustomers">
+                                    <Button fx:id="customer_btn" layoutX="7.0" layoutY="296.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="146.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Coustomers">
                                        <graphic>
                                           <FontAwesomeIcon fill="WHITE" glyphName="USERS" />
                                        </graphic></Button>
@@ -203,7 +203,7 @@
                                           <String fx:value="shadow" />
                                        </styleClass>
                                        <children>
-                                          <TextField fx:id="availableRoom_search" layoutX="31.0" layoutY="14.0" prefHeight="27.0" prefWidth="179.0" promptText="Search" stylesheets="@dashboard.css">
+                                          <TextField fx:id="availableRoom_search" layoutX="32.0" layoutY="14.0" onAction="#availableRoomsSearch" prefHeight="27.0" prefWidth="179.0" promptText="Search" stylesheets="@dashboard.css">
                                              <styleClass>
                                                 <String fx:value="search" />
                                                 <String fx:value="search-focused" />
@@ -236,7 +236,7 @@
                                                 <TableColumn fx:id="customer_CustomerCheckout" prefWidth="174.0" text="Check-out" />
                                             </columns>
                                           </TableView>
-                                          <TextField fx:id="customer_search" layoutX="23.0" layoutY="4.0" prefHeight="32.0" prefWidth="235.0" promptText="Search" styleClass="search" stylesheets="@dashboard.css" />
+                                          <TextField fx:id="customer_search" layoutX="24.0" layoutY="4.0" onKeyTyped="#customerSearch" prefHeight="32.0" prefWidth="235.0" promptText="Search" styleClass="search" stylesheets="@dashboard.css" />
                                           <FontAwesomeIcon glyphName="SEARCH" layoutX="34.0" layoutY="24.0" />
                                        </children>
                                     </AnchorPane>

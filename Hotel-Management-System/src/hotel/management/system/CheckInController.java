@@ -67,10 +67,11 @@ public class CheckInController implements Initializable {
     @FXML
     private ComboBox<?> roomNumber;
 
+    @FXML
     public void customerCheckIn() {
 
-        String insertCustomerData = "INSERT INTO customer(customer_id,roomType,roomNumber,firstName,lastName,phoneNumber,email,checkIn,checkOut)"
-                + "Values (?,?,?,?,?,?,?,?,?)";
+        String insertCustomerData = "INSERT INTO customer(customer_id,total,roomType,roomNumber,firstName,lastName,phoneNumber,email,checkIn,checkOut)"
+                + "Values (?,?,?,?,?,?,?,?,?,?)";
 
         connect = database.connectDb();
 
@@ -107,25 +108,26 @@ public class CheckInController implements Initializable {
                 alert.setContentText("Are you Sure");
 
                 Optional<ButtonType> option = alert.showAndWait();
-
+ String totalC = String.valueOf(totalP);
                 if (option.get().equals(ButtonType.OK)) {
 
                     prepare = connect.prepareStatement(insertCustomerData);
                     prepare.setString(1, customerNum);
-                     prepare.setString(2, roomT);
-                      prepare.setString(3, roomN);
-                    prepare.setString(4, firstN);
-                    prepare.setString(5, lastN);
-                    prepare.setString(6, phoneNum);
-                    prepare.setString(7, email);
-                    prepare.setString(8, checkInDate);
-                    prepare.setString(9, checkOutDate);
+                    prepare.setString(2, totalC);
+                     prepare.setString(3, roomT);
+                      prepare.setString(4, roomN);
+                    prepare.setString(5, firstN);
+                    prepare.setString(6, lastN);
+                    prepare.setString(7, phoneNum);
+                    prepare.setString(8, email);
+                    prepare.setString(9, checkInDate);
+                    prepare.setString(10, checkOutDate);
 
                     prepare.executeUpdate();
 
                     
                     String date = String.valueOf(checkIn_Date.getValue());
-                   String totalC = String.valueOf(totalP);
+                  
                     String customerN = customerNumber.getText();
                     String customerReceipt = "INSERT INTO customer_receipt (customer_num,total,date)"
                             + "VALUES(?,?,?)"; 
@@ -141,11 +143,12 @@ public class CheckInController implements Initializable {
                          String sqlEditStatus = " UPDATE room SET status = 'Occupied' WHERE roomNumber = '"+roomN+"'";
                          statement = connect.createStatement();
                          statement.executeUpdate(sqlEditStatus);
-                         
+                      alert = new Alert(AlertType.INFORMATION);  
                     alert.setTitle("Information Message");
                     alert.setHeaderText(null);
                     alert.setContentText("Sucessfully check-In!");
                     alert.showAndWait();
+                    reset();
 
                 } else {
                     return;
@@ -157,7 +160,22 @@ public class CheckInController implements Initializable {
         }
 
     }
+    
+    @FXML
+    public void reset(){
+    
+    firstName.setText("");
+    lastName.setText("");
+   phoneNumber.setText("");
+    emailAddress.setText("");
+    roomType.getSelectionModel().clearSelection();
+    roomNumber.getSelectionModel().clearSelection();
+    totalDays.setText("---");
+    total.setText("$0.0");
+    }
+    
 
+    @FXML
     public void totalDays() {
 
         Alert alert;
@@ -181,6 +199,7 @@ public class CheckInController implements Initializable {
 
     private double totalP = 0;
 
+    @FXML
     public void displayTotal() {
 
         String totalD = String.valueOf(getData.totalDays);
@@ -231,6 +250,7 @@ public class CheckInController implements Initializable {
         }
     }
 
+    @FXML
     public void roomTypeList() {
 
         String listType = "SELECT * FROM room WHERE status = 'Available' GROUP BY type ORDER BY type ASC";
@@ -258,6 +278,7 @@ public class CheckInController implements Initializable {
 
     }
 
+    @FXML
     public void roomNumberList() {
         
       
@@ -265,6 +286,8 @@ public class CheckInController implements Initializable {
         String item = (String) roomType.getSelectionModel().getSelectedItem();
         String availableRoomNumber = "SELECT * FROM room WHERE type = '"+item +"' ORDER BY roomNumber ASC ";
 
+        
+        
         connect = database.connectDb();
 
         try {

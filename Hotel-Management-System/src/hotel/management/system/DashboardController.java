@@ -36,6 +36,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import static javafx.stage.StageStyle.TRANSPARENT;
 import java.sql.Statement;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import static javafx.stage.StageStyle.DECORATED;
 
 /**
@@ -104,21 +107,21 @@ public class DashboardController implements Initializable {
     @FXML
     private AnchorPane customer_From;
     @FXML
-    private TableView<?> customer_TableView;
+    private TableView<customerData> customer_TableView;
     @FXML
-    private TableColumn<?, ?> customer_CustomerNumber;
+    private TableColumn<customerData, String> customer_CustomerNumber;
     @FXML
-    private TableColumn<?, ?> customer_CustomerFName;
+    private TableColumn<customerData, String> customer_CustomerFName;
     @FXML
-    private TableColumn<?, ?> customer_CustomerLName;
+    private TableColumn<customerData, String> customer_CustomerLName;
     @FXML
-    private TableColumn<?, ?> customer_Customerphone;
+    private TableColumn<customerData, String> customer_Customerphone;
     @FXML
-    private TableColumn<?, ?> customer_CustomerTotalPayment;
+    private TableColumn<customerData, String> customer_CustomerTotalPayment;
     @FXML
-    private TableColumn<?, ?> customer_CustomerCheckIn;
+    private TableColumn<customerData, String> customer_CustomerCheckIn;
     @FXML
-    private TableColumn<?, ?> customer_CustomerCheckout;
+    private TableColumn<customerData, String> customer_CustomerCheckout;
     @FXML
     private TextField customer_search;
 
@@ -175,6 +178,7 @@ public class DashboardController implements Initializable {
 
     }
 
+    @FXML
     public void availableRoomsSelectData() {
 
         RoomData roomD = availableRoom_tableView.getSelectionModel().getSelectedItem();
@@ -187,6 +191,41 @@ public class DashboardController implements Initializable {
         available_roomNumber.setText(String.valueOf(roomD.getRoomNumber()));
         availableRoom_price.setText(String.valueOf(roomD.getPrice()));
 
+    }
+
+    @FXML
+    public void availableRoomsSearch() {
+
+        FilteredList<RoomData> filter = new FilteredList<>(roomDataList, e -> true);
+        availableRoom_search.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateRoomData -> {
+
+                if (newValue == null) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateRoomData.getRoomNumber().toString().contains(searchKey)) {
+                    return true;
+                } else if (predicateRoomData.getRoomType().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateRoomData.getPrice().toString().contains(searchKey)) {
+
+                    return true;
+                } else if (predicateRoomData.getStatus().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            });
+        });
+
+        SortedList<RoomData> sortList = new SortedList<>(filter);
+        sortList.comparatorProperty().bind(availableRoom_tableView.comparatorProperty());
+        availableRoom_tableView.setItems(roomDataList);
     }
 
     @FXML
@@ -259,6 +298,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    @FXML
     public void availableRoomsUpadte() {
 
         String type1 = (String) availableRoom_type.getSelectionModel().getSelectedItem();
@@ -301,6 +341,7 @@ public class DashboardController implements Initializable {
 
     }
 
+    @FXML
     public void availableRoomsDelete() {
 
         String type1 = (String) availableRoom_type.getSelectionModel().getSelectedItem();
@@ -362,6 +403,7 @@ public class DashboardController implements Initializable {
 
     }
 
+    @FXML
     public void availableRoomsCheckIn() {
 
         try {
@@ -371,8 +413,8 @@ public class DashboardController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
 
-            stage.setMinHeight(400+15);
-            stage.setMinWidth(300+15);
+            stage.setMinHeight(400 + 15);
+            stage.setMinWidth(300 + 15);
 
             stage.initStyle(DECORATED);
             stage.setScene(scene);
@@ -414,9 +456,132 @@ public class DashboardController implements Initializable {
         availableRoom_status.setItems(list);
     }
 
+    public ObservableList<customerData> customerListData() {
+
+        ObservableList<customerData> listData = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM customer";
+
+        connect = database.connectDb();
+        try {
+
+            prepare = connect.prepareCall(sql);
+            result = prepare.executeQuery();
+
+            customerData custD;
+            while (result.next()) {
+
+                custD = new customerData(result.getInt("customer_id"),
+                        result.getString("firstName"),
+                        result.getString("lastName"),
+                        result.getString("phoneNumber"),
+                        result.getDouble("total"),
+                        result.getDate("checkIn"),
+                        result.getDate("checkOut"));
+
+                listData.add(custD);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return listData;
+
+    }
+
+    private ObservableList<customerData> listCustomerData;
+
+    public void customerShowData() {
+
+        listCustomerData = customerListData();
+
+        customer_CustomerNumber.setCellValueFactory(new PropertyValueFactory<>("customerNum"));
+        customer_CustomerFName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        customer_CustomerLName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+
+        customer_Customerphone.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+
+        customer_CustomerTotalPayment.setCellValueFactory(new PropertyValueFactory<>("total"));
+
+        customer_CustomerCheckIn.setCellValueFactory(new PropertyValueFactory<>("checkIn"));
+
+        customer_CustomerCheckout.setCellValueFactory(new PropertyValueFactory<>("checkOut"));
+
+        customer_TableView.setItems(listCustomerData);
+
+    }
+
+    @FXML
+    public void customerSearch() {
+
+        FilteredList<customerData> filter = new FilteredList<>(listCustomerData, e -> true);
+        customer_search.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateCustomer -> {
+
+                if (newValue == null && newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+                if (predicateCustomer.getCustomerNum().toString().contains(searchKey)) {
+
+                    return true;
+
+                } else if (predicateCustomer.getFirstName().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateCustomer.getLastName().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateCustomer.getTotal().toString().contains(searchKey)) {
+                    return true;
+                } else if (predicateCustomer.getPhoneNumber().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateCustomer.getCheckIn().toString().contains(searchKey)) {
+                    return true;
+                } else if (predicateCustomer.getCheckOut().toString().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<customerData> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(customer_TableView.comparatorProperty());
+        customer_TableView.setItems(sortList);
+    }
+
+    @FXML
+    public void switchForm(ActionEvent event) {
+
+        if (event.getSource() == dashboard_btn) {
+            Dashboard_form.setVisible(true);
+            availableRoom_RoomFrom.setVisible(false);
+            customer_From.setVisible(false);
+
+        } else if (event.getSource() == aroom_btn) {
+            Dashboard_form.setVisible(false);
+            availableRoom_RoomFrom.setVisible(true);
+            customer_From.setVisible(false);
+ availableRoomsSearch(); 
+            availableRoomsShowData();
+        } else if (event.getSource() == customer_btn) {
+
+            Dashboard_form.setVisible(false);
+            availableRoom_RoomFrom.setVisible(false);
+            customer_From.setVisible(true);
+      customerSearch(); 
+            customerShowData();
+        }
+    }
+
     private double x = 0;
     private double y = 0;
 
+    @FXML
     public void logout() {
 
         try {
@@ -457,23 +622,30 @@ public class DashboardController implements Initializable {
 
     }
 
+    @FXML
     public void close() {
 
         System.exit(0);
 
     }
 
+    @FXML
     public void minimize() {
         Stage stage = (Stage) main_form.getScene().getWindow();
         stage.setIconified(true);
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
+  public void initialize(URL url, ResourceBundle rb) {
         availableRoomsRoomType();
         availableRoomsStatus();
-        availableRoomsShowData();
-
+        
+        try{
+        //  availableRoomsSearch(); 
+        }catch(Exception e){e.printStackTrace();}
+        availableRoomsShowData(); // Ensure this is called first
+        customerShowData();       // Load customer data
+       // availableRoomsSearch();   // Set up room search
+      //  customerSearch();         // Set up customer search
     }
 }
