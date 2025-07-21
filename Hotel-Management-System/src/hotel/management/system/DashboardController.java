@@ -36,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import static javafx.stage.StageStyle.TRANSPARENT;
 import java.sql.Statement;
+import java.util.Date;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -132,6 +133,45 @@ public class DashboardController implements Initializable {
     private PreparedStatement prepare;
     private Statement statement;
     private ResultSet result;
+    @FXML
+    private Label dashboard_bookToday;
+    
+    private int count = 0;
+    
+    public void dashboardCountBookToday(){
+    
+    Date date = new Date();
+        
+    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+    
+        
+        String sql = "SELECT COUNT(id) FROM customer WHERE checkIn = '"+sqlDate+"'";
+        
+        connect = database.connectDb();
+        
+    count = 0;
+        try{
+            
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+        while(result.next()){
+        count = result.getInt("COUNT(id");
+        }
+        
+        System.out.println(count);
+       // dashboard_bookToday.setText(String.valueOf(count));
+            
+        }catch(Exception e ){e.printStackTrace();}
+        
+    }
+    
+    public void dashboardDisplayBookToday(){
+    
+    dashboardCountBookToday();
+            dashboard_bookToday.setText(String.valueOf(count));
+    
+    
+    }
 
     public ObservableList<RoomData> availableRoomsListData() {
 
@@ -558,10 +598,15 @@ public class DashboardController implements Initializable {
     public void switchForm(ActionEvent event) {
 
         if (event.getSource() == dashboard_btn) {
+           
+           
+            
             Dashboard_form.setVisible(true);
             availableRoom_RoomFrom.setVisible(false);
             customer_From.setVisible(false);
 
+             dashboardDisplayBookToday();
+            
         } else if (event.getSource() == aroom_btn) {
             Dashboard_form.setVisible(false);
             availableRoom_RoomFrom.setVisible(true);
@@ -637,7 +682,12 @@ public class DashboardController implements Initializable {
 
     @Override
   public void initialize(URL url, ResourceBundle rb) {
-        availableRoomsRoomType();
+       
+      dashboardDisplayBookToday();
+      
+      dashboardCountBookToday();
+      
+      availableRoomsRoomType();
         availableRoomsStatus();
         
         try{
