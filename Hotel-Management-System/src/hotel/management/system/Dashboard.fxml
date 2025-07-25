@@ -101,7 +101,7 @@
                      <center>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
-                              <AnchorPane fx:id="Dashboard_form" layoutX="-3.0" layoutY="78.0" prefHeight="556.0" prefWidth="907.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="Dashboard_form" layoutX="-3.0" layoutY="78.0" prefHeight="556.0" prefWidth="907.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane layoutX="38.0" prefHeight="147.0" prefWidth="869.0" stylesheets="@dashboard.css">
                                        <styleClass>
@@ -221,11 +221,11 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="customer_From" layoutX="31.0" layoutY="14.0" prefHeight="556.0" prefWidth="895.0" stylesheets="@dashboard.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="customer_From" layoutX="31.0" layoutY="14.0" prefHeight="556.0" prefWidth="895.0" stylesheets="@dashboard.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane layoutX="64.0" layoutY="13.0" prefHeight="533.0" prefWidth="831.0">
                                        <children>
-                                          <TableView fx:id="customer_TableView" layoutX="19.0" layoutY="47.0" prefHeight="470.0" prefWidth="798.0" stylesheets="@dashboard.css">
+                                          <TableView fx:id="customer_TableView" layoutX="19.0" layoutY="47.0" onKeyTyped="#customer_search" prefHeight="470.0" prefWidth="798.0" stylesheets="@dashboard.css">
                                             <columns>
                                               <TableColumn fx:id="customer_CustomerNumber" prefWidth="114.0" text="Customer #" />
                                               <TableColumn fx:id="customer_CustomerFName" minWidth="0.0" prefWidth="101.99996948242188" text="First Name" />
@@ -236,7 +236,7 @@
                                                 <TableColumn fx:id="customer_CustomerCheckout" prefWidth="174.0" text="Check-out" />
                                             </columns>
                                           </TableView>
-                                          <TextField fx:id="customer_search" layoutX="24.0" layoutY="4.0" onKeyTyped="#customerSearch" prefHeight="32.0" prefWidth="235.0" promptText="Search" styleClass="search" stylesheets="@dashboard.css" />
+                                          <TextField fx:id="customer_search" layoutX="24.0" layoutY="4.0" onAction="#customerSearch" onKeyTyped="#customerSearch" prefHeight="32.0" prefWidth="235.0" promptText="Search" styleClass="search" stylesheets="@dashboard.css" />
                                           <FontAwesomeIcon glyphName="SEARCH" layoutX="34.0" layoutY="24.0" />
                                        </children>
                                     </AnchorPane>
