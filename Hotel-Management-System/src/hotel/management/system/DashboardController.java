@@ -40,6 +40,8 @@ import java.util.Date;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.scene.chart.XYChart;
+import javafx.scene.layout.VBox;
 import static javafx.stage.StageStyle.DECORATED;
 
 /**
@@ -67,10 +69,6 @@ public class DashboardController implements Initializable {
     private AnchorPane Dashboard_form;
     @FXML
     private AnchorPane dashbook_todayCheck;
-    @FXML
-    private Label dashboard_todayIncome;
-    @FXML
-    private AnchorPane dashboard_totalIncome;
     @FXML
     private AreaChart<?, ?> dashboard_areaChart;
     @FXML
@@ -133,7 +131,13 @@ public class DashboardController implements Initializable {
     private PreparedStatement prepare;
     private Statement statement;
     private ResultSet result;
+     @FXML
+    private Label dashboard_todayIncome;
+
     @FXML
+    private Label dashboard_totalIncome;
+
+     @FXML
     private Label dashboard_bookToday;
     
     private int count = 0;
@@ -145,7 +149,7 @@ public class DashboardController implements Initializable {
     java.sql.Date sqlDate = new java.sql.Date(date.getTime());
     
         
-        String sql = "SELECT COUNT(id) FROM customer WHERE checkIn = '"+sqlDate+"'";
+        String sql = "SELECT COUNT(id) AS count FROM customer WHERE checkIn = '"+sqlDate+"'";
         
         connect = database.connectDb();
         
@@ -155,7 +159,7 @@ public class DashboardController implements Initializable {
             prepare = connect.prepareStatement(sql);
             result = prepare.executeQuery();
         while(result.next()){
-        count = result.getInt("COUNT(id");
+        count = result.getInt("count");
         }
         
         System.out.println(count);
@@ -172,6 +176,113 @@ public class DashboardController implements Initializable {
     
     
     }
+    
+    private double sumToday = 0;
+    public void dashboardSumIncomeToday(){
+    
+    
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        
+        String sql = "SELECT SUM(total) FROM customer_receipt WHERE date = '"+sqlDate+"'"; 
+    
+    connect = database.connectDb();
+    try{
+    
+        
+        prepare = connect.prepareStatement(sql);
+        result = prepare.executeQuery();
+        while(result.next()){
+        
+        sumToday = result.getDouble("SUM(total)");
+        
+        }
+    
+    }catch(Exception e ){e.printStackTrace();}
+    
+    
+    
+    }
+ 
+    
+   
+    public void dashboardDisplayIncomeToday(){
+        
+        
+        
+        dashboardSumIncomeToday();
+    
+   dashboard_todayIncome.setText("$"+String.valueOf(sumToday));
+    
+    }
+    
+    private double overall = 0;
+    
+    public void dashboardSumTotalIncome(){
+    
+    String sql = "SELECT SUM(total) FROM customer_receipt";
+   
+     connect = database.connectDb();
+    
+    try{
+    
+     prepare = connect.prepareStatement(sql);
+      result = prepare.executeQuery();
+      
+      
+      while(result.next()){
+          
+          overall = result.getDouble("SUM(total)");
+      }
+    
+    
+    }catch(Exception e ){e.printStackTrace();}
+    
+    
+    }
+    
+    
+    
+     public void dashboardTotalIncome(){
+      dashboardSumTotalIncome();
+    
+         dashboard_totalIncome.setText(String.valueOf(overall));
+
+//dashboard_totalIncome.setText(String.valueOf(overall));
+    }
+    
+    
+    public void dashboardChart(){
+    
+    dashboard_areaChart.getData().clear();
+    
+    String sql = "SELECT date,total FROM customer_receipt GROUP BY date ORDER BY TIMESTAMP(date) ASC LIMIT 8";
+    
+    connect = database.connectDb();
+    
+    XYChart.Series chart = new XYChart.Series();
+    try{
+    
+    prepare = connect.prepareStatement(sql);
+      result = prepare.executeQuery();
+      
+    while(result.next()){
+    
+        chart.getData().add(new XYChart.Data(result.getString(1),result.getInt(2)));
+    
+    
+    }
+      dashboard_areaChart.getData().add(chart);
+      
+    }catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+    
+    }
+    
+    
+    
 
     public ObservableList<RoomData> availableRoomsListData() {
 
@@ -604,8 +715,12 @@ public class DashboardController implements Initializable {
             Dashboard_form.setVisible(true);
             availableRoom_RoomFrom.setVisible(false);
             customer_From.setVisible(false);
-
+         
+            dashboardDisplayIncomeToday();
              dashboardDisplayBookToday();
+             dashboardTotalIncome();
+             dashboardChart();
+         
             
         } else if (event.getSource() == aroom_btn) {
             Dashboard_form.setVisible(false);
@@ -685,7 +800,11 @@ public class DashboardController implements Initializable {
        
       dashboardDisplayBookToday();
       
-      dashboardCountBookToday();
+      dashboardDisplayIncomeToday();
+      dashboardTotalIncome();
+      dashboardChart();
+      
+      //dashboardCountBookToday();
       
       availableRoomsRoomType();
         availableRoomsStatus();
