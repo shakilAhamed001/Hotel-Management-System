@@ -74,7 +74,7 @@
                                     <DatePicker fx:id="checkIn_Date" layoutX="10.0" layoutY="341.0" onAction="#displayTotal" prefHeight="26.0" prefWidth="123.0" promptText="MM-DD-YYYY" styleClass="combo-box" stylesheets="@dashboard.css" />
                                     <DatePicker fx:id="checkOut_Date" layoutX="144.0" layoutY="341.0" onAction="#totalDays" prefHeight="26.0" prefWidth="124.0" promptText="MM-DD-YYYY" styleClass="combo-box" stylesheets="@dashboard.css" />
                                     <Button layoutX="11.0" layoutY="446.0" mnemonicParsing="false" onAction="#reset" prefHeight="28.0" prefWidth="60.0" styleClass="delete-btn" stylesheets="@dashboard.css" text="Reset" />
-                                    <Button layoutX="101.0" layoutY="446.0" mnemonicParsing="false" styleClass="add-btn" stylesheets="@dashboard.css" text="Recepet" />
+                                    <Button fx:id="rece" layoutX="101.0" layoutY="446.0" mnemonicParsing="false" onAction="#customerRecepit" styleClass="add-btn" stylesheets="@dashboard.css" text="Recepit" />
                                     <Button layoutX="197.0" layoutY="445.0" mnemonicParsing="false" onAction="#customerCheckIn" styleClass="check-in-btn" stylesheets="@dashboard.css" text="Check_In" />
                                     <Label layoutX="134.0" layoutY="10.0" text="Customer #:" />
                                     <Label fx:id="customerNumber" layoutX="203.0" layoutY="11.0" prefHeight="17.0" prefWidth="64.0" text="1" />

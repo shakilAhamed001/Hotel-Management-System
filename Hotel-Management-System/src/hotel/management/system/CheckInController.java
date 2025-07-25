@@ -66,101 +66,91 @@ public class CheckInController implements Initializable {
     private ComboBox<?> roomType;
     @FXML
     private ComboBox<?> roomNumber;
-
     @FXML
-    public void customerCheckIn() {
+    private Button rece;
 
-        String insertCustomerData = "INSERT INTO customer(customer_id,total,roomType,roomNumber,firstName,lastName,phoneNumber,email,checkIn,checkOut)"
-                + "Values (?,?,?,?,?,?,?,?,?,?)";
+   @FXML
 
-        connect = database.connectDb();
+public void customerCheckIn() {
+    String insertCustomerData = "INSERT INTO customer(customer_id,total,roomType,roomNumber,firstName,lastName,phoneNumber,email,checkIn,checkOut) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    connect = database.connectDb();
 
-        try {
+    try {
+        String customerNum = customerNumber.getText();
+        String roomT = (String) roomType.getSelectionModel().getSelectedItem();
+        String roomN = (String) roomNumber.getSelectionModel().getSelectedItem();
+        String firstN = firstName.getText();
+        String lastN = lastName.getText();
+        String phoneNum = phoneNumber.getText();
+        String email = emailAddress.getText();
+        String checkInDate = String.valueOf(checkIn_Date.getValue());
+        String checkOutDate = String.valueOf(checkOut_Date.getValue());
+        String totalC = String.valueOf(totalP);
 
-            String customerNum = customerNumber.getText();
-            String roomT = (String)roomType.getSelectionModel().getSelectedItem();
-            String roomN = (String)roomNumber.getSelectionModel().getSelectedItem();
-            
-            
-            String firstN = firstName.getText();
-            String lastN = lastName.getText();
-            String phoneNum = phoneNumber.getText();
-            String email = emailAddress.getText();
-            String checkInDate = String.valueOf(checkIn_Date.getValue());
-            String checkOutDate = String.valueOf(checkOut_Date.getValue());
+        Alert alert;
+        if (customerNum.isEmpty() || firstN.isEmpty() || lastN.isEmpty() || phoneNum.isEmpty() || email.isEmpty()
+                || checkInDate.isEmpty() || checkOutDate.isEmpty()) {
 
-            Alert alert;
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("ERROR Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill all blank fields");
+            alert.showAndWait();
 
-            if (customerNum == null || firstN == null || lastN == null || phoneNum == null || email == null
-                    || checkInDate == null || checkOutDate == null) {
+        } else {
+            alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you Sure?");
 
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("ERROR Message");
+            Optional<ButtonType> option = alert.showAndWait();
+
+            if (option.get().equals(ButtonType.OK)) {
+                // Insert into customer table
+                prepare = connect.prepareStatement(insertCustomerData);
+                prepare.setString(1, customerNum);
+                prepare.setString(2, totalC);
+                prepare.setString(3, roomT);
+                prepare.setString(4, roomN);
+                prepare.setString(5, firstN);
+                prepare.setString(6, lastN);
+                prepare.setString(7, phoneNum);
+                prepare.setString(8, email);
+                prepare.setString(9, checkInDate);
+                prepare.setString(10, checkOutDate);
+                prepare.executeUpdate();
+
+                // Insert into receipt table
+                String customerReceipt = "INSERT INTO customer_receipt (customer_num, total, date) VALUES (?, ?, ?)";
+                prepare = connect.prepareStatement(customerReceipt);
+                prepare.setString(1, customerNum);
+                prepare.setString(2, totalC);
+                prepare.setString(3, checkInDate);
+                prepare.execute();
+
+                // Update room status
+                String sqlEditStatus = "UPDATE room SET status = 'Occupied' WHERE roomNumber = '" + roomN + "'";
+                statement = connect.createStatement();
+                statement.executeUpdate(sqlEditStatus);
+
+                // Success Alert
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Information Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Please fill all blank fields");
+                alert.setContentText("Successfully Check-In!");
                 alert.showAndWait();
 
-            } else {
+                // ✅ Auto-generate receipt
+                customerRecepit(null);
 
-                alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Message");
-                alert.setHeaderText(null);
-                alert.setContentText("Are you Sure");
-
-                Optional<ButtonType> option = alert.showAndWait();
- String totalC = String.valueOf(totalP);
-                if (option.get().equals(ButtonType.OK)) {
-
-                    prepare = connect.prepareStatement(insertCustomerData);
-                    prepare.setString(1, customerNum);
-                    prepare.setString(2, totalC);
-                     prepare.setString(3, roomT);
-                      prepare.setString(4, roomN);
-                    prepare.setString(5, firstN);
-                    prepare.setString(6, lastN);
-                    prepare.setString(7, phoneNum);
-                    prepare.setString(8, email);
-                    prepare.setString(9, checkInDate);
-                    prepare.setString(10, checkOutDate);
-
-                    prepare.executeUpdate();
-
-                    
-                    String date = String.valueOf(checkIn_Date.getValue());
-                  
-                    String customerN = customerNumber.getText();
-                    String customerReceipt = "INSERT INTO customer_receipt (customer_num,total,date)"
-                            + "VALUES(?,?,?)"; 
-                    
-                    prepare = connect.prepareStatement(customerReceipt);
-                    prepare.setString(1, customerN);
-                    prepare.setString(2, totalC);
-                         prepare.setString(3, date);
-                         
-                         
-                         prepare.execute();
-                         
-                         String sqlEditStatus = " UPDATE room SET status = 'Occupied' WHERE roomNumber = '"+roomN+"'";
-                         statement = connect.createStatement();
-                         statement.executeUpdate(sqlEditStatus);
-                      alert = new Alert(AlertType.INFORMATION);  
-                    alert.setTitle("Information Message");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Sucessfully check-In!");
-                    alert.showAndWait();
-                    reset();
-
-                } else {
-                    return;
-                }
+                reset();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
+    } catch (Exception e) {
+        e.printStackTrace();
     }
-    
+}
+
     @FXML
     public void reset(){
     
@@ -336,14 +326,47 @@ public class CheckInController implements Initializable {
         }
     }
 
+  @FXML
+private void customerRecepit(ActionEvent event) {
+    String customerNum = customerNumber.getText();
+    String firstN = firstName.getText();
+    String lastN = lastName.getText();
+    String fullName = firstN + " " + lastN;
+    String phone = phoneNumber.getText();
+    String email = emailAddress.getText();
+    String roomT = (String) roomType.getSelectionModel().getSelectedItem();
+    String roomN = (String) roomNumber.getSelectionModel().getSelectedItem();
+    String checkIn = String.valueOf(checkIn_Date.getValue());
+    String checkOut = String.valueOf(checkOut_Date.getValue());
+    String totalCost = total.getText();
+    String days = totalDays.getText();
+
+    StringBuilder receipt = new StringBuilder();
+    receipt.append("======== HOTEL CHECK-IN RECEIPT ========\n");
+    receipt.append("Customer ID   : ").append(customerNum).append("\n");
+    receipt.append("Name          : ").append(fullName).append("\n");
+    receipt.append("Phone Number  : ").append(phone).append("\n");
+    receipt.append("Email Address : ").append(email).append("\n");
+    receipt.append("Room Type     : ").append(roomT).append("\n");
+    receipt.append("Room Number   : ").append(roomN).append("\n");
+    receipt.append("Check-In Date : ").append(checkIn).append("\n");
+    receipt.append("Check-Out Date: ").append(checkOut).append("\n");
+    receipt.append("Total Days    : ").append(days).append(" day(s)\n");
+    receipt.append("Total Payment : ").append(totalCost).append("\n");
+    receipt.append("========================================");
+
+    // Print to console
+    System.out.println(receipt.toString());
+
+    // Optional: show in alert
+    Alert alert = new Alert(AlertType.INFORMATION);
+    alert.setTitle("Receipt");
+    alert.setHeaderText("Check-In Receipt");
+    alert.setContentText(receipt.toString());
+    alert.showAndWait();
+}
+
+
+
 }
     
-//    public void initialize(URL location, ResourceBundle resources) {
-//
-//        displayCoustomerNumber();
-//            roomTypeList();
-//
-//            roomNumberList();
-//    }
-//
-//}
