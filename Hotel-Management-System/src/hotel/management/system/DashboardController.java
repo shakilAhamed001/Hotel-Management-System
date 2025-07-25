@@ -44,6 +44,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import static javafx.stage.StageStyle.DECORATED;
+import java.text.SimpleDateFormat;
+import java.sql.SQLException;
 
 /**
  * FXML Controller class
@@ -142,20 +144,32 @@ public class DashboardController implements Initializable {
     private int count = 0;
 
     public void dashboardCountBookToday() {
-        Date date = new Date();
-        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-        String sql = "SELECT COUNT(id) AS count FROM customer WHERE checkIn = '" + sqlDate + "'";
         connect = database.connectDb();
         count = 0;
+        
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        
         try {
+            String sql = "SELECT COUNT(*) as count FROM customer WHERE DATE(checkIn) = ?";
             prepare = connect.prepareStatement(sql);
+            prepare.setDate(1, sqlDate);
             result = prepare.executeQuery();
-            while (result.next()) {
+            
+            if (result.next()) {
                 count = result.getInt("count");
             }
-            System.out.println(count);
+            
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -167,61 +181,104 @@ public class DashboardController implements Initializable {
     private double sumToday = 0;
 
     public void dashboardSumIncomeToday() {
+        connect = database.connectDb();
+        sumToday = 0;
+        
         Date date = new Date();
         java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-        String sql = "SELECT SUM(total) FROM customer_receipt WHERE date = '" + sqlDate + "'";
-        connect = database.connectDb();
+        
         try {
+            String sql = "SELECT COALESCE(SUM(total), 0) as total_sum FROM customer_receipt WHERE DATE(date) = ?";
             prepare = connect.prepareStatement(sql);
+            prepare.setDate(1, sqlDate);
             result = prepare.executeQuery();
-            while (result.next()) {
-                sumToday = result.getDouble("SUM(total)");
+            
+            if (result.next()) {
+                sumToday = result.getDouble("total_sum");
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void dashboardDisplayIncomeToday() {
         dashboardSumIncomeToday();
-        dashboard_todayIncome.setText("$" + String.valueOf(sumToday));
+        dashboard_todayIncome.setText("$" + String.format("%.2f", sumToday));
     }
 
     private double overall = 0;
 
     public void dashboardSumTotalIncome() {
-        String sql = "SELECT SUM(total) FROM customer_receipt";
         connect = database.connectDb();
+        overall = 0;
+        
         try {
+            String sql = "SELECT COALESCE(SUM(total), 0) as total_sum FROM customer_receipt";
             prepare = connect.prepareStatement(sql);
             result = prepare.executeQuery();
-            while (result.next()) {
-                overall = result.getDouble("SUM(total)");
+            
+            if (result.next()) {
+                overall = result.getDouble("total_sum");
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void dashboardTotalIncome() {
         dashboardSumTotalIncome();
-        dashboard_totalIncome.setText(String.valueOf(overall));
+        dashboard_totalIncome.setText("$" + String.format("%.2f", overall));
     }
 
     public void dashboardChart() {
         dashboard_areaChart.getData().clear();
-        String sql = "SELECT date,total FROM customer_receipt GROUP BY date ORDER BY TIMESTAMP(date) ASC LIMIT 8";
+        
+        String sql = "SELECT date, SUM(total) as total FROM customer_receipt GROUP BY date ORDER BY date ASC LIMIT 8";
+        
         connect = database.connectDb();
         XYChart.Series chart = new XYChart.Series();
+        chart.setName("Income Chart");
+        
         try {
             prepare = connect.prepareStatement(sql);
             result = prepare.executeQuery();
+            
             while (result.next()) {
-                chart.getData().add(new XYChart.Data(result.getString(1), result.getInt(2)));
+                String dateStr = result.getString(1);
+                double total = result.getDouble(2);
+                chart.getData().add(new XYChart.Data(dateStr, total));
             }
+            
             dashboard_areaChart.getData().add(chart);
+            
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -239,6 +296,14 @@ public class DashboardController implements Initializable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return listData;
     }
@@ -258,51 +323,50 @@ public class DashboardController implements Initializable {
     public void availableRoomsSelectData() {
         RoomData roomD = availableRoom_tableView.getSelectionModel().getSelectedItem();
         int num = availableRoom_tableView.getSelectionModel().getSelectedIndex();
-
-        // Fixed condition - check if no item is selected
+        
         if (num < 0 || roomD == null) {
             return;
         }
-
+        
         available_roomNumber.setText(String.valueOf(roomD.getRoomNumber()));
         availableRoom_price.setText(String.valueOf(roomD.getPrice()));
     }
 
     @FXML
     public void availableRoomsSearch() {
+        if (roomDataList == null) {
+            return;
+        }
+        
         FilteredList<RoomData> filter = new FilteredList<>(roomDataList, e -> true);
-
+        
         availableRoom_search.textProperty().addListener((Observable, oldValue, newValue) -> {
             filter.setPredicate(predicateRoomData -> {
-                // Handle null or empty search
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-
+                
                 String searchKey = newValue.toLowerCase();
-
-                // Check room number
+                
                 if (predicateRoomData.getRoomNumber().toString().toLowerCase().contains(searchKey)) {
                     return true;
-                } // Check room type
+                }
                 else if (predicateRoomData.getRoomType().toLowerCase().contains(searchKey)) {
                     return true;
-                } // Check price
+                }
                 else if (predicateRoomData.getPrice().toString().toLowerCase().contains(searchKey)) {
                     return true;
-                } // Check status
+                }
                 else if (predicateRoomData.getStatus().toLowerCase().contains(searchKey)) {
                     return true;
                 }
-
+                
                 return false;
             });
         });
-
+        
         SortedList<RoomData> sortList = new SortedList<>(filter);
         sortList.comparatorProperty().bind(availableRoom_tableView.comparatorProperty());
-
-        // Fixed: Set the sorted list instead of original data
         availableRoom_tableView.setItems(sortList);
     }
 
@@ -311,31 +375,29 @@ public class DashboardController implements Initializable {
         String sql = "INSERT INTO room (roomNumber,type,status,price) VALUES(?,?,?,?)";
         connect = database.connectDb();
         try {
-            String roomNumber = (String) available_roomNumber.getText();
+            String roomNumber = available_roomNumber.getText();
             String type = (String) availableRoom_type.getSelectionModel().getSelectedItem();
             String status = (String) availableRoom_status.getSelectionModel().getSelectedItem();
             String price = availableRoom_price.getText();
-            prepare = connect.prepareStatement(sql);
-            prepare.setString(1, roomNumber);
-            prepare.setString(2, type);
-            prepare.setString(3, status);
-            prepare.setString(4, price);
+            
             Alert alert;
-            if (roomNumber == null || type == null || status == null || price == null) {
+            if (roomNumber == null || roomNumber.isEmpty() || type == null || status == null || price == null || price.isEmpty()) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Please fill all blank feilds");
+                alert.setContentText("Please fill all blank fields");
                 alert.showAndWait();
             } else {
-                String check = "SELECT roomNumber FROM room WHERE roomNumber = '" + roomNumber + "' ";
+                String check = "SELECT roomNumber FROM room WHERE roomNumber = ?";
                 prepare = connect.prepareStatement(check);
+                prepare.setString(1, roomNumber);
                 result = prepare.executeQuery();
+                
                 if (result.next()) {
                     alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error Message");
                     alert.setHeaderText(null);
-                    alert.setContentText("Room #" + roomNumber + "was already exist!");
+                    alert.setContentText("Room #" + roomNumber + " already exists!");
                     alert.showAndWait();
                 } else {
                     prepare = connect.prepareStatement(sql);
@@ -344,19 +406,28 @@ public class DashboardController implements Initializable {
                     prepare.setString(3, status);
                     prepare.setString(4, price);
                     prepare.executeUpdate();
+                    
                     alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information Message");
                     alert.setHeaderText(null);
-                    alert.setContentText("Succesfully added");
+                    alert.setContentText("Successfully added");
                     alert.showAndWait();
+                    
                     availableRoomsShowData();
                     availableRoomsClear();
-                    // Re-initialize search after adding new data
                     availableRoomsSearch();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -366,31 +437,45 @@ public class DashboardController implements Initializable {
         String status1 = (String) availableRoom_status.getSelectionModel().getSelectedItem();
         String price1 = availableRoom_price.getText();
         String roomNum = available_roomNumber.getText();
-        String sql = "UPDATE room SET type = '" + type1 + "', status = '" + status1 + "', price ='" + price1 + "' WHERE roomNumber = '" + roomNum + "'";
+        
+        String sql = "UPDATE room SET type = ?, status = ?, price = ? WHERE roomNumber = ?";
         connect = database.connectDb();
+        
         try {
             Alert alert;
-            if (type1 == null || status1 == null || price1 == null || roomNum == null) {
+            if (type1 == null || status1 == null || price1 == null || price1.isEmpty() || roomNum == null || roomNum.isEmpty()) {
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Please select the data First");
+                alert.setContentText("Please select the data first");
                 alert.showAndWait();
             } else {
                 prepare = connect.prepareStatement(sql);
+                prepare.setString(1, type1);
+                prepare.setString(2, status1);
+                prepare.setString(3, price1);
+                prepare.setString(4, roomNum);
                 prepare.executeUpdate();
+                
                 alert = new Alert(AlertType.INFORMATION);
-                alert.setTitle("INFORMATION Message");
+                alert.setTitle("Information Message");
                 alert.setHeaderText(null);
                 alert.setContentText("Successfully Updated");
                 alert.showAndWait();
+                
                 availableRoomsShowData();
                 availableRoomsClear();
-                // Re-initialize search after updating data
                 availableRoomsSearch();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -400,15 +485,17 @@ public class DashboardController implements Initializable {
         String status1 = (String) availableRoom_status.getSelectionModel().getSelectedItem();
         String price1 = availableRoom_price.getText();
         String roomNum = available_roomNumber.getText();
-        String deleteData = "DELETE FROM room WHERE roomNumber = '" + roomNum + "'";
+        
+        String deleteData = "DELETE FROM room WHERE roomNumber = ?";
         connect = database.connectDb();
+        
         try {
             Alert alert;
-            if (type1 == null || status1 == null || price1 == null || roomNum == null) {
+            if (type1 == null || status1 == null || price1 == null || price1.isEmpty() || roomNum == null || roomNum.isEmpty()) {
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Confirmation Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Please Select data first");
+                alert.setContentText("Please select data first");
                 alert.showAndWait();
             } else {
                 alert = new Alert(AlertType.CONFIRMATION);
@@ -416,24 +503,32 @@ public class DashboardController implements Initializable {
                 alert.setHeaderText(null);
                 alert.setContentText("Are you sure you want to delete Room #" + roomNum + "?");
                 Optional<ButtonType> option = alert.showAndWait();
+                
                 if (option.get().equals(ButtonType.OK)) {
-                    statement = connect.createStatement();
-                    statement.executeUpdate(deleteData);
+                    prepare = connect.prepareStatement(deleteData);
+                    prepare.setString(1, roomNum);
+                    prepare.executeUpdate();
+                    
                     alert = new Alert(AlertType.INFORMATION);
-                    alert.setTitle("INFORMATION Message");
+                    alert.setTitle("Information Message");
                     alert.setHeaderText(null);
-                    alert.setContentText("Successfuly Delete");
+                    alert.setContentText("Successfully Deleted");
                     alert.showAndWait();
+                    
                     availableRoomsShowData();
                     availableRoomsClear();
-                    // Re-initialize search after deleting data
                     availableRoomsSearch();
-                } else {
-                    return;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -490,15 +585,31 @@ public class DashboardController implements Initializable {
         String sql = "SELECT * FROM customer";
         connect = database.connectDb();
         try {
-            prepare = connect.prepareCall(sql);
+            prepare = connect.prepareStatement(sql);
             result = prepare.executeQuery();
             customerData custD;
             while (result.next()) {
-                custD = new customerData(result.getInt("customer_id"), result.getString("firstName"), result.getString("lastName"), result.getString("phoneNumber"), result.getDouble("total"), result.getDate("checkIn"), result.getDate("checkOut"));
+                custD = new customerData(
+                    result.getInt("customer_id"), 
+                    result.getString("firstName"), 
+                    result.getString("lastName"), 
+                    result.getString("phoneNumber"), 
+                    result.getDouble("total"), 
+                    result.getDate("checkIn"), 
+                    result.getDate("checkOut")
+                );
                 listData.add(custD);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return listData;
     }
@@ -519,44 +630,46 @@ public class DashboardController implements Initializable {
 
     @FXML
     public void customerSearch() {
+        if (listCustomerData == null) {
+            return;
+        }
+        
         FilteredList<customerData> filter = new FilteredList<>(listCustomerData, e -> true);
-
+        
         customer_search.textProperty().addListener((Observable, oldValue, newValue) -> {
             filter.setPredicate(predicateCustomer -> {
-                // Fixed condition - use OR instead of AND
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-
+                
                 String searchKey = newValue.toLowerCase();
-
-                // Check customer number
+                
                 if (predicateCustomer.getCustomerNum().toString().toLowerCase().contains(searchKey)) {
                     return true;
-                } // Check first name
-                else if (predicateCustomer.getFirstName().toLowerCase().contains(searchKey)) {
-                    return true;
-                } // Check last name
-                else if (predicateCustomer.getLastName().toLowerCase().contains(searchKey)) {
-                    return true;
-                } // Check total payment
-                else if (predicateCustomer.getTotal().toString().toLowerCase().contains(searchKey)) {
-                    return true;
-                } // Check phone number
-                else if (predicateCustomer.getPhoneNumber().toLowerCase().contains(searchKey)) {
-                    return true;
-                } // Check check-in date
-                else if (predicateCustomer.getCheckIn().toString().toLowerCase().contains(searchKey)) {
-                    return true;
-                } // Check check-out date
-                else if (predicateCustomer.getCheckOut().toString().toLowerCase().contains(searchKey)) {
+                }
+                else if (predicateCustomer.getFirstName() != null && predicateCustomer.getFirstName().toLowerCase().contains(searchKey)) {
                     return true;
                 }
-
+                else if (predicateCustomer.getLastName() != null && predicateCustomer.getLastName().toLowerCase().contains(searchKey)) {
+                    return true;
+                }
+                else if (predicateCustomer.getTotal().toString().toLowerCase().contains(searchKey)) {
+                    return true;
+                }
+                else if (predicateCustomer.getPhoneNumber() != null && predicateCustomer.getPhoneNumber().toLowerCase().contains(searchKey)) {
+                    return true;
+                }
+                else if (predicateCustomer.getCheckIn() != null && predicateCustomer.getCheckIn().toString().toLowerCase().contains(searchKey)) {
+                    return true;
+                }
+                else if (predicateCustomer.getCheckOut() != null && predicateCustomer.getCheckOut().toString().toLowerCase().contains(searchKey)) {
+                    return true;
+                }
+                
                 return false;
             });
         });
-
+        
         SortedList<customerData> sortList = new SortedList<>(filter);
         sortList.comparatorProperty().bind(customer_TableView.comparatorProperty());
         customer_TableView.setItems(sortList);
@@ -568,6 +681,7 @@ public class DashboardController implements Initializable {
             Dashboard_form.setVisible(true);
             availableRoom_RoomFrom.setVisible(false);
             customer_From.setVisible(false);
+            
             dashboardDisplayIncomeToday();
             dashboardDisplayBookToday();
             dashboardTotalIncome();
@@ -577,14 +691,12 @@ public class DashboardController implements Initializable {
             availableRoom_RoomFrom.setVisible(true);
             customer_From.setVisible(false);
             availableRoomsShowData();
-            // Re-initialize search when switching to room form
             availableRoomsSearch();
         } else if (event.getSource() == customer_btn) {
             Dashboard_form.setVisible(false);
             availableRoom_RoomFrom.setVisible(false);
             customer_From.setVisible(true);
             customerShowData();
-            // Re-initialize search when switching to customer form
             customerSearch();
         }
     }
@@ -616,8 +728,6 @@ public class DashboardController implements Initializable {
                 stage.setScene(scene);
                 stage.show();
                 logout_btn.getScene().getWindow().hide();
-            } else {
-                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -637,25 +747,26 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Initialize dashboard data
         dashboardDisplayBookToday();
         dashboardDisplayIncomeToday();
         dashboardTotalIncome();
         dashboardChart();
-
+        
+        // Initialize room data
         availableRoomsRoomType();
         availableRoomsStatus();
         availableRoomsShowData();
-
-        // Initialize search functionality after data is loaded
         availableRoomsSearch();
-
+        
+        // Initialize customer data
         customerShowData();
-
-        // Initialize customer search after data is loaded
         customerSearch();
     }
 
     @FXML
     private void customer_search(KeyEvent event) {
+        
+        // Additional key event handling if needed
     }
 }
