@@ -4,49 +4,32 @@
  */
 package hotel.management.system;
 
-/**
- *
- * @author PC
- */
 public class RoomData {
-    
     private Integer roomNumber;
     private String roomType;
     private String status;
     private Double price;
-    
-    
-    public RoomData(Integer roomNumber, String roomType, String status, Double price){
-    
-    this.roomNumber = roomNumber;
-    this.roomType = roomType;
-    this.status = status;
-    this.price = price;
-    
+
+    public RoomData(Integer roomNumber, String roomType, String status, Double price) {
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+        this.status = status;
+        this.price = price;
     }
-    
-    public Integer getRoomNumber(){
-        
-     return roomNumber;
-    
+
+    public Integer getRoomNumber() {
+        return roomNumber;
     }
-    
-    public String getRoomType(){
-        
-     return roomType;
-    
+
+    public String getRoomType() {
+        return roomType;
     }
-    public String getStatus(){
-        
-     return status;
-    
+
+    public String getStatus() {
+        return status;
     }
-    
-     public Double getPrice(){
-        
-     return price;
-    
+
+    public Double getPrice() {
+        return price;
     }
-           
-    
 }

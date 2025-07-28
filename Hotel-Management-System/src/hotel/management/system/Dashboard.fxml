@@ -7,11 +7,14 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -38,11 +41,17 @@
                                        <graphic>
                                           <FontAwesomeIcon glyphName="CLOSE" size="1.2em" />
                                        </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Close Application" />
+                                       </tooltip>
                                     </Button>
                                     <Button fx:id="minimization" layoutX="1040.0" layoutY="1.0" minWidth="41.0" mnemonicParsing="false" onAction="#minimize" prefHeight="25.0" prefWidth="54.0" styleClass="minimize" stylesheets="@dashboard.css">
                                        <graphic>
                                           <FontAwesomeIcon glyphName="MINUS" />
                                        </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Minimize Window" />
+                                       </tooltip>
                                     </Button>
                                     <FontAwesomeIcon glyphName="BUILDING" layoutX="14.0" layoutY="24.0" />
                                     <Label layoutX="34.0" layoutY="6.0" prefHeight="18.0" prefWidth="212.0" text="Nilima Seaside">
@@ -72,16 +81,25 @@
                                        <font>
                                           <Font name="System Bold" size="13.0" />
                                        </font>
+                                       <tooltip>
+                                          <Tooltip text="View Dashboard Metrics" />
+                                       </tooltip>
                                     </Button>
                                     <Button fx:id="aroom_btn" layoutX="22.0" layoutY="322.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="170.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Available Rooms" textFill="#0a0a0a">
                                        <graphic>
                                           <FontAwesomeIcon glyphName="CHECK_CIRCLE" />
                                        </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Manage Room Availability" />
+                                       </tooltip>
                                     </Button>
                                     <Button fx:id="customer_btn" layoutX="23.0" layoutY="356.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="167.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Customers" textFill="#0a0a0a">
                                        <graphic>
                                           <FontAwesomeIcon glyphName="USERS" />
                                        </graphic>
+                                       <tooltip>
+                                          <Tooltip text="View Customer Information" />
+                                       </tooltip>
                                     </Button>
                                     <Button fx:id="records_btn" layoutX="22.0" layoutY="390.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="170.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Records" textFill="#0a0a0a">
                                        <graphic>
@@ -90,11 +108,17 @@
                                        <font>
                                           <Font name="System Bold" size="13.0" />
                                        </font>
+                                       <tooltip>
+                                          <Tooltip text="View Booking and Income Records" />
+                                       </tooltip>
                                     </Button>
                                     <Button fx:id="logout_btn" layoutX="14.0" layoutY="512.0" minWidth="40.0" mnemonicParsing="false" onAction="#logout" prefHeight="28.0" prefWidth="40.0" styleClass="logout-btn" stylesheets="@dashboard.css">
                                        <graphic>
                                           <FontAwesomeIcon fill="WHITE" glyphName="SIGN_OUT" size="1.6em" styleClass="logout-btn" wrappingWidth="12.778570175170898" />
                                        </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Log Out" />
+                                       </tooltip>
                                     </Button>
                                     <Label layoutX="79.0" layoutY="519.0" text="Sign out">
                                        <font>
@@ -110,9 +134,9 @@
                      <center>
                         <AnchorPane prefHeight="556.0" prefWidth="899.0" BorderPane.alignment="CENTER">
                            <children>
-                              <AnchorPane fx:id="Dashboard_form" layoutX="-3.0" layoutY="78.0" prefHeight="556.0" prefWidth="929.0" style="-fx-background-color: #F0F8FF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="Dashboard_form" layoutX="-3.0" layoutY="78.0" prefHeight="556.0" prefWidth="929.0" style="-fx-background-color: #F0F8FF;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane layoutX="37.0" layoutY="4.0" prefHeight="147.0" prefWidth="869.0" style="-fx-effect: #F0F8FF;" stylesheets="@dashboard.css">
+                                    <AnchorPane layoutX="37.0" layoutY="4.0" prefHeight="147.0" prefWidth="869.0" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);" stylesheets="@dashboard.css">
                                        <styleClass>
                                           <String fx:value="white-bg" />
                                           <String fx:value="shadow" />
@@ -120,13 +144,13 @@
                                        <children>
                                           <AnchorPane fx:id="dashbook_todayCheck" layoutX="25.0" layoutY="10.0" prefHeight="127.0" prefWidth="262.0" stylesheets="@dashboard.css">
                                              <children>
-                                                <ImageView fitHeight="130.0" fitWidth="268.0" layoutX="-6.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: #F0F8FF;">
+                                                <ImageView fitHeight="130.0" fitWidth="268.0" layoutX="-6.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@image/graph1%20(1).png" />
                                                    </image>
                                                 </ImageView>
                                                 <FontAwesomeIcon glyphName="CHECK" layoutX="5.0" layoutY="43.0" size="4em" wrappingWidth="53.29999923706055" />
-                                                <Label layoutX="81.0" layoutY="96.0" style="-fx-alignment: #ffffff;" text="Today's Check">
+                                                <Label layoutX="81.0" layoutY="96.0" text="Today's Check">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
                                                    </font>
@@ -138,7 +162,7 @@
                                                 </Label>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane layoutX="309.0" layoutY="10.0" prefHeight="127.0" prefWidth="262.0" style="-fx-effect: #F0F8FF;" styleClass="card" stylesheets="@dashboard.css">
+                                          <AnchorPane layoutX="309.0" layoutY="10.0" prefHeight="127.0" prefWidth="262.0" styleClass="card" stylesheets="@dashboard.css">
                                              <children>
                                                 <ImageView fitHeight="129.0" fitWidth="262.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -146,7 +170,7 @@
                                                    </image>
                                                 </ImageView>
                                                 <FontAwesomeIcon glyphName="MONEY" layoutX="18.0" layoutY="47.0" size="4em" />
-                                                <Label layoutX="77.0" layoutY="96.0" style="-fx-alignment: #ffffff;" text="Today's Income">
+                                                <Label layoutX="77.0" layoutY="96.0" text="Today's Income">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
                                                    </font>
@@ -158,14 +182,14 @@
                                                 </Label>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane layoutX="593.0" layoutY="10.0" prefHeight="127.0" prefWidth="262.0" style="-fx-effect: #F0F8FF;" styleClass="shadow" stylesheets="@dashboard.css">
+                                          <AnchorPane layoutX="593.0" layoutY="10.0" prefHeight="127.0" prefWidth="262.0" styleClass="shadow" stylesheets="@dashboard.css">
                                              <children>
                                                 <ImageView fitHeight="128.0" fitWidth="309.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@image/graph3%20(1).png" />
                                                    </image>
                                                 </ImageView>
-                                                <Label layoutX="99.0" layoutY="97.0" style="-fx-alignment: #ffffff;" text="Total Income" textFill="#f20000">
+                                                <Label layoutX="99.0" layoutY="97.0" text="Total Income" textFill="#f20000">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
                                                    </font>
@@ -175,7 +199,7 @@
                                                       <Font name="System Bold" size="19.0" />
                                                    </font>
                                                 </Label>
-                                                <FontAwesomeIcon fill="#323030" glyphName="DOLLAR" layoutX="14.0" layoutY="42.0" selectionFill="#ff0606" size="3em" wrappingWidth="22.85714340209961" />
+                                                <FontAwesomeIcon fill="#323030" glyphName="DOLLAR" layoutX="14.0" layoutY="42.0" size="3em" wrappingWidth="22.85714340209961" />
                                              </children>
                                           </AnchorPane>
                                        </children>
@@ -202,20 +226,36 @@
                                  <children>
                                     <AnchorPane prefHeight="564.0" prefWidth="287.0" style="-fx-background-color: #F0F8FF;" stylesheets="@dashboard.css">
                                        <children>
-                                          <Button fx:id="availableRoom_checkbtn" layoutX="84.0" layoutY="408.0" mnemonicParsing="false" onAction="#availableRoomsCheckIn" styleClass="check-in-btn" stylesheets="@dashboard.css" text="Check-In" />
-                                          <TextField fx:id="available_roomNumber" layoutX="95.0" layoutY="44.0" prefHeight="26.0" prefWidth="134.0" styleClass="textfield" stylesheets="@dashboard.css" />
+                                          <Button fx:id="availableRoom_checkbtn" layoutX="84.0" layoutY="408.0" mnemonicParsing="false" onAction="#availableRoomsCheckIn" styleClass="check-in-btn" stylesheets="@dashboard.css" text="Check-In">
+                                             <tooltip>
+                                                <Tooltip text="Check in a customer" />
+                                             </tooltip>
+                                          </Button>
+                                          <TextField fx:id="available_roomNumber" layoutX="95.0" layoutY="44.0" prefHeight="26.0" prefWidth="134.0" styleClass="textfield" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Enter Room Number" />
+                                             </tooltip>
+                                          </TextField>
                                           <Label layoutX="19.0" layoutY="49.0" prefHeight="28.0" prefWidth="85.0" text="Room #:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox fx:id="availableRoom_type" layoutX="84.0" layoutY="101.0" onAction="#availableRoomsRoomType" prefHeight="26.0" prefWidth="136.0" promptText="Choose" styleClass="combo-box" stylesheets="@dashboard.css" />
-                                          <Label layoutX="23.0" layoutY="98.0" prefHeight="28.0" prefWidth="60.0" text=" Type:">
+                                          <ComboBox fx:id="availableRoom_type" layoutX="84.0" layoutY="101.0" onAction="#availableRoomsRoomType" prefHeight="26.0" prefWidth="136.0" promptText="Choose" styleClass="combo-box" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Select Room Type" />
+                                             </tooltip>
+                                          </ComboBox>
+                                          <Label layoutX="23.0" layoutY="98.0" prefHeight="28.0" prefWidth="60.0" text="Type:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox fx:id="availableRoom_status" layoutX="86.0" layoutY="155.0" onAction="#availableRoomsStatus" prefHeight="26.0" prefWidth="140.0" promptText="Choose" styleClass="combo-box" stylesheets="@dashboard.css" />
+                                          <ComboBox fx:id="availableRoom_status" layoutX="86.0" layoutY="155.0" onAction="#availableRoomsStatus" prefHeight="26.0" prefWidth="140.0" promptText="Choose" styleClass="combo-box" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Select Room Status" />
+                                             </tooltip>
+                                          </ComboBox>
                                           <Label layoutX="23.0" layoutY="154.0" prefHeight="28.0" prefWidth="60.0" text="Status:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
@@ -226,11 +266,31 @@
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="availableRoom_price" layoutX="87.0" layoutY="216.0" prefHeight="26.0" prefWidth="139.0" styleClass="textfield" stylesheets="@dashboard.css" />
-                                          <Button fx:id="availableRoom_addbtn" layoutX="41.0" layoutY="289.0" mnemonicParsing="false" onAction="#availableRoomAdd" styleClass="add-btn" stylesheets="@dashboard.css" text="Add" />
-                                          <Button fx:id="availableRoom_updatebtn" layoutX="187.0" layoutY="286.0" mnemonicParsing="false" onAction="#availableRoomsUpadte" styleClass="update-btn" stylesheets="@dashboard.css" text="Update" />
-                                          <Button fx:id="availableRoom_deletebtn" layoutX="44.0" layoutY="337.0" mnemonicParsing="false" onAction="#availableRoomsDelete" styleClass="delete-btn" stylesheets="@dashboard.css" text="Delete" />
-                                          <Button fx:id="availableRoom_clearbtn" layoutX="174.0" layoutY="337.0" mnemonicParsing="false" onAction="#availableRoomsClear" prefHeight="32.0" prefWidth="60.0" styleClass="clear-btn" stylesheets="@dashboard.css" text="Clear" />
+                                          <TextField fx:id="availableRoom_price" layoutX="87.0" layoutY="216.0" prefHeight="26.0" prefWidth="139.0" styleClass="textfield" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Enter Room Price" />
+                                             </tooltip>
+                                          </TextField>
+                                          <Button fx:id="availableRoom_addbtn" layoutX="41.0" layoutY="289.0" mnemonicParsing="false" onAction="#availableRoomAdd" styleClass="add-btn" stylesheets="@dashboard.css" text="Add">
+                                             <tooltip>
+                                                <Tooltip text="Add New Room" />
+                                             </tooltip>
+                                          </Button>
+                                          <Button fx:id="availableRoom_updatebtn" layoutX="187.0" layoutY="286.0" mnemonicParsing="false" onAction="#availableRoomsUpadte" styleClass="update-btn" stylesheets="@dashboard.css" text="Update">
+                                             <tooltip>
+                                                <Tooltip text="Update Selected Room" />
+                                             </tooltip>
+                                          </Button>
+                                          <Button fx:id="availableRoom_deletebtn" layoutX="44.0" layoutY="337.0" mnemonicParsing="false" onAction="#availableRoomsDelete" styleClass="delete-btn" stylesheets="@dashboard.css" text="Delete">
+                                             <tooltip>
+                                                <Tooltip text="Delete Selected Room" />
+                                             </tooltip>
+                                          </Button>
+                                          <Button fx:id="availableRoom_clearbtn" layoutX="174.0" layoutY="337.0" mnemonicParsing="false" onAction="#availableRoomsClear" prefHeight="32.0" prefWidth="60.0" styleClass="clear-btn" stylesheets="@dashboard.css" text="Clear">
+                                             <tooltip>
+                                                <Tooltip text="Clear Input Fields" />
+                                             </tooltip>
+                                          </Button>
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane layoutX="283.0" layoutY="1.0" prefHeight="562.0" prefWidth="642.0" style="-fx-background-color: #F0F8FF;" stylesheets="@dashboard.css">
@@ -240,6 +300,9 @@
                                                 <String fx:value="search" />
                                                 <String fx:value="search-focused" />
                                              </styleClass>
+                                             <tooltip>
+                                                <Tooltip text="Search Rooms" />
+                                             </tooltip>
                                           </TextField>
                                           <FontAwesomeIcon glyphName="SEARCH" layoutX="38.0" layoutY="32.0" />
                                           <TableView fx:id="availableRoom_tableView" layoutX="14.0" layoutY="50.0" onMouseClicked="#availableRoomsSelectData" prefHeight="490.0" prefWidth="615.0" styleClass="nav-btn" stylesheets="@dashboard.css">
@@ -254,11 +317,11 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="customer_From" layoutX="-3.0" layoutY="14.0" prefHeight="567.0" prefWidth="928.0" style="-fx-background-color: #F0F8FF;" stylesheets="@dashboard.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="customer_From" layoutX="-3.0" layoutY="14.0" prefHeight="567.0" prefWidth="928.0" style="-fx-background-color: #F0F8FF;" stylesheets="@dashboard.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <AnchorPane layoutX="52.0" layoutY="13.0" prefHeight="533.0" prefWidth="843.0">
                                        <children>
-                                          <TableView fx:id="customer_TableView" layoutX="27.0" layoutY="47.0" onKeyTyped="#customer_search" prefHeight="470.0" prefWidth="798.0" stylesheets="@dashboard.css">
+                                          <TableView fx:id="customer_TableView" layoutX="27.0" layoutY="50.0" prefHeight="470.0" prefWidth="798.0" stylesheets="@dashboard.css">
                                              <columns>
                                                 <TableColumn fx:id="customer_CustomerNumber" prefWidth="114.0" text="Customer #" />
                                                 <TableColumn fx:id="customer_CustomerFName" minWidth="0.0" prefWidth="101.99996948242188" text="First Name" />
@@ -274,8 +337,17 @@
                                                 <String fx:value="textfield" />
                                              </styleClass>
                                           </TableView>
-                                          <TextField fx:id="customer_search" layoutX="34.0" layoutY="4.0" onAction="#customerSearch" onKeyTyped="#customerSearch" prefHeight="32.0" prefWidth="235.0" promptText="Search" styleClass="search" stylesheets="@dashboard.css" />
-                                          <FontAwesomeIcon glyphName="SEARCH" layoutX="44.0" layoutY="24.0" />
+                                          <TextField fx:id="customer_search" layoutX="27.0" layoutY="10.0" onAction="#customerSearch" prefHeight="32.0" prefWidth="235.0" promptText="Search Customers" styleClass="search" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Search by Customer Details" />
+                                             </tooltip>
+                                          </TextField>
+                                          <FontAwesomeIcon glyphName="SEARCH" layoutX="37.0" layoutY="30.0" />
+                                          <Button fx:id="customer_viewDetails" layoutX="290.0" layoutY="10.0" mnemonicParsing="false" onAction="#customerViewDetails" prefHeight="32.0" prefWidth="100.0" styleClass="add-btn" stylesheets="@dashboard.css" text="View Details">
+                                             <tooltip>
+                                                <Tooltip text="View Selected Customer Details" />
+                                             </tooltip>
+                                          </Button>
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -284,7 +356,22 @@
                                  <children>
                                     <AnchorPane layoutX="52.0" layoutY="13.0" prefHeight="533.0" prefWidth="843.0">
                                        <children>
-                                          <AreaChart fx:id="records_weeklyChart" layoutX="27.0" layoutY="10.0" prefHeight="200.0" prefWidth="370.0" title="Weekly Records">
+                                          <DatePicker fx:id="records_startDate" layoutX="27.0" layoutY="10.0" prefHeight="32.0" prefWidth="130.0" promptText="Start Date" styleClass="date-picker" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Select Start Date for Filter" />
+                                             </tooltip>
+                                          </DatePicker>
+                                          <DatePicker fx:id="records_endDate" layoutX="170.0" layoutY="10.0" prefHeight="32.0" prefWidth="130.0" promptText="End Date" styleClass="date-picker" stylesheets="@dashboard.css">
+                                             <tooltip>
+                                                <Tooltip text="Select End Date for Filter" />
+                                             </tooltip>
+                                          </DatePicker>
+                                          <Button fx:id="records_applyFilter" layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#recordsApplyFilter" prefHeight="32.0" prefWidth="100.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Apply Filter">
+                                             <tooltip>
+                                                <Tooltip text="Apply Date Range Filter" />
+                                             </tooltip>
+                                          </Button>
+                                          <AreaChart fx:id="records_weeklyChart" layoutX="27.0" layoutY="50.0" prefHeight="200.0" prefWidth="370.0" title="Weekly Records">
                                              <xAxis>
                                                 <CategoryAxis side="BOTTOM" />
                                              </xAxis>
@@ -292,7 +379,7 @@
                                                 <NumberAxis side="LEFT" />
                                              </yAxis>
                                           </AreaChart>
-                                          <AreaChart fx:id="records_monthlyChart" layoutX="425.0" layoutY="10.0" prefHeight="200.0" prefWidth="370.0" title="Monthly Records">
+                                          <AreaChart fx:id="records_monthlyChart" layoutX="425.0" layoutY="50.0" prefHeight="200.0" prefWidth="370.0" title="Monthly Records">
                                              <xAxis>
                                                 <CategoryAxis side="BOTTOM" />
                                              </xAxis>
@@ -300,7 +387,17 @@
                                                 <NumberAxis side="LEFT" />
                                              </yAxis>
                                           </AreaChart>
-                                          <TableView fx:id="records_tableView" layoutX="27.0" layoutY="220.0" prefHeight="297.0" prefWidth="798.0" stylesheets="@dashboard.css">
+                                          <CheckBox fx:id="records_showBookings" layoutX="27.0" layoutY="255.0" mnemonicParsing="false" onAction="#toggleChartSeries" selected="true" styleClass="check-box" stylesheets="@dashboard.css" text="Show Bookings">
+                                             <tooltip>
+                                                <Tooltip text="Toggle Bookings Series Visibility" />
+                                             </tooltip>
+                                          </CheckBox>
+                                          <CheckBox fx:id="records_showIncome" layoutX="150.0" layoutY="255.0" mnemonicParsing="false" onAction="#toggleChartSeries" selected="true" styleClass="check-box" stylesheets="@dashboard.css" text="Show Income">
+                                             <tooltip>
+                                                <Tooltip text="Toggle Income Series Visibility" />
+                                             </tooltip>
+                                          </CheckBox>
+                                          <TableView fx:id="records_tableView" layoutX="27.0" layoutY="280.0" prefHeight="240.0" prefWidth="798.0" stylesheets="@dashboard.css">
                                              <columns>
                                                 <TableColumn fx:id="records_Period" prefWidth="266.0" text="Period" />
                                                 <TableColumn fx:id="records_Bookings" prefWidth="266.0" text="Number of Bookings" />
