@@ -1,16 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package hotel.management.system;
 
 import java.sql.Connection;
 import java.net.URL;
-import java.sql.DriverManager;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -42,10 +39,9 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
 import static javafx.stage.StageStyle.DECORATED;
-import java.text.SimpleDateFormat;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 /**
  * FXML Controller class
@@ -66,6 +62,8 @@ public class DashboardController implements Initializable {
     private Button aroom_btn;
     @FXML
     private Button customer_btn;
+    @FXML
+    private Button records_btn;
     @FXML
     private Button logout_btn;
     @FXML
@@ -126,6 +124,20 @@ public class DashboardController implements Initializable {
     private TableColumn<customerData, String> customer_CustomerCheckout;
     @FXML
     private TextField customer_search;
+    @FXML
+    private AnchorPane records_form;
+    @FXML
+    private TableView<RecordData> records_tableView;
+    @FXML
+    private TableColumn<RecordData, String> records_Period;
+    @FXML
+    private TableColumn<RecordData, Integer> records_Bookings;
+    @FXML
+    private TableColumn<RecordData, Double> records_Income;
+    @FXML
+    private AreaChart<String, Number> records_weeklyChart;
+    @FXML
+    private AreaChart<String, Number> records_monthlyChart;
 
     /**
      * Initializes the controller class.
@@ -268,6 +280,152 @@ public class DashboardController implements Initializable {
             }
             
             dashboard_areaChart.getData().add(chart);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void weeklyRecordsChart() {
+        records_weeklyChart.getData().clear();
+        
+        String bookingSql = "SELECT DATE(checkIn) as date, COUNT(*) as count FROM customer WHERE checkIn >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(checkIn) ORDER BY date ASC";
+        String incomeSql = "SELECT DATE(date) as date, SUM(total) as total FROM customer_receipt WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(date) ORDER BY date ASC";
+        
+        connect = database.connectDb();
+        XYChart.Series<String, Number> bookingSeries = new XYChart.Series<>();
+        bookingSeries.setName("Bookings");
+        XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
+        incomeSeries.setName("Income ($)");
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        
+        try {
+            // Initialize data maps for the last 7 days
+            ArrayList<String> dates = new ArrayList<>();
+            ArrayList<Number> bookings = new ArrayList<>();
+            ArrayList<Number> incomes = new ArrayList<>();
+            
+            for (int i = 6; i >= 0; i--) {
+                java.sql.Date sqlDate = new java.sql.Date(new Date().getTime() - i * 24L * 60 * 60 * 1000);
+                String dateStr = dateFormat.format(sqlDate);
+                dates.add(dateStr);
+                bookings.add(0);
+                incomes.add(0.0);
+            }
+            
+            // Fetch bookings
+            prepare = connect.prepareStatement(bookingSql);
+            result = prepare.executeQuery();
+            while (result.next()) {
+                String dateStr = result.getString("date");
+                int count = result.getInt("count");
+                int index = dates.indexOf(dateStr);
+                if (index >= 0) {
+                    bookings.set(index, count);
+                }
+            }
+            
+            // Fetch income
+            prepare = connect.prepareStatement(incomeSql);
+            result = prepare.executeQuery();
+            while (result.next()) {
+                String dateStr = result.getString("date");
+                double total = result.getDouble("total");
+                int index = dates.indexOf(dateStr);
+                if (index >= 0) {
+                    incomes.set(index, total);
+                }
+            }
+            
+            // Populate chart series
+            for (int i = 0; i < dates.size(); i++) {
+                bookingSeries.getData().add(new XYChart.Data<>(dates.get(i), bookings.get(i)));
+                incomeSeries.getData().add(new XYChart.Data<>(dates.get(i), incomes.get(i)));
+            }
+            
+            records_weeklyChart.getData().addAll(bookingSeries, incomeSeries);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void monthlyRecordsChart() {
+        records_monthlyChart.getData().clear();
+        
+        String bookingSql = "SELECT DATE(checkIn) as date, COUNT(*) as count FROM customer WHERE checkIn >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(checkIn) ORDER BY date ASC";
+        String incomeSql = "SELECT DATE(date) as date, SUM(total) as total FROM customer_receipt WHERE date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(date) ORDER BY date ASC";
+        
+        connect = database.connectDb();
+        XYChart.Series<String, Number> bookingSeries = new XYChart.Series<>();
+        bookingSeries.setName("Bookings");
+        XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
+        incomeSeries.setName("Income ($)");
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        
+        try {
+            // Initialize data maps for the last 30 days
+            ArrayList<String> dates = new ArrayList<>();
+            ArrayList<Number> bookings = new ArrayList<>();
+            ArrayList<Number> incomes = new ArrayList<>();
+            
+            for (int i = 29; i >= 0; i--) {
+                java.sql.Date sqlDate = new java.sql.Date(new Date().getTime() - i * 24L * 60 * 60 * 1000);
+                String dateStr = dateFormat.format(sqlDate);
+                dates.add(dateStr);
+                bookings.add(0);
+                incomes.add(0.0);
+            }
+            
+            // Fetch bookings
+            prepare = connect.prepareStatement(bookingSql);
+            result = prepare.executeQuery();
+            while (result.next()) {
+                String dateStr = result.getString("date");
+                int count = result.getInt("count");
+                int index = dates.indexOf(dateStr);
+                if (index >= 0) {
+                    bookings.set(index, count);
+                }
+            }
+            
+            // Fetch income
+            prepare = connect.prepareStatement(incomeSql);
+            result = prepare.executeQuery();
+            while (result.next()) {
+                String dateStr = result.getString("date");
+                double total = result.getDouble("total");
+                int index = dates.indexOf(dateStr);
+                if (index >= 0) {
+                    incomes.set(index, total);
+                }
+            }
+            
+            // Populate chart series
+            for (int i = 0; i < dates.size(); i++) {
+                bookingSeries.getData().add(new XYChart.Data<>(dates.get(i), bookings.get(i)));
+                incomeSeries.getData().add(new XYChart.Data<>(dates.get(i), incomes.get(i)));
+            }
+            
+            records_monthlyChart.getData().addAll(bookingSeries, incomeSeries);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -675,12 +833,77 @@ public class DashboardController implements Initializable {
         customer_TableView.setItems(sortList);
     }
 
+    public ObservableList<RecordData> recordsListData() {
+        ObservableList<RecordData> listData = FXCollections.observableArrayList();
+        connect = database.connectDb();
+        try {
+            // Weekly records (last 7 days)
+            String weeklyBookingSql = "SELECT COUNT(*) as bookings FROM customer WHERE checkIn >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+            prepare = connect.prepareStatement(weeklyBookingSql);
+            result = prepare.executeQuery();
+            int weeklyBookings = 0;
+            if (result.next()) {
+                weeklyBookings = result.getInt("bookings");
+            }
+            
+            String weeklyIncomeSql = "SELECT COALESCE(SUM(total), 0) as income FROM customer_receipt WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+            prepare = connect.prepareStatement(weeklyIncomeSql);
+            result = prepare.executeQuery();
+            double weeklyIncome = 0;
+            if (result.next()) {
+                weeklyIncome = result.getDouble("income");
+            }
+            listData.add(new RecordData("Last 7 Days", weeklyBookings, weeklyIncome));
+            
+            // Monthly records (last 30 days)
+            String monthlyBookingSql = "SELECT COUNT(*) as bookings FROM customer WHERE checkIn >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+            prepare = connect.prepareStatement(monthlyBookingSql);
+            result = prepare.executeQuery();
+            int monthlyBookings = 0;
+            if (result.next()) {
+                monthlyBookings = result.getInt("bookings");
+            }
+            
+            String monthlyIncomeSql = "SELECT COALESCE(SUM(total), 0) as income FROM customer_receipt WHERE date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+            prepare = connect.prepareStatement(monthlyIncomeSql);
+            result = prepare.executeQuery();
+            double monthlyIncome = 0;
+            if (result.next()) {
+                monthlyIncome = result.getDouble("income");
+            }
+            listData.add(new RecordData("Last 30 Days", monthlyBookings, monthlyIncome));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (prepare != null) prepare.close();
+                if (connect != null) connect.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return listData;
+    }
+
+    private ObservableList<RecordData> recordDataList;
+
+    public void recordsShowData() {
+        recordDataList = recordsListData();
+        records_Period.setCellValueFactory(new PropertyValueFactory<>("period"));
+        records_Bookings.setCellValueFactory(new PropertyValueFactory<>("bookings"));
+        records_Income.setCellValueFactory(new PropertyValueFactory<>("income"));
+        records_tableView.setItems(recordDataList);
+    }
+
     @FXML
     public void switchForm(ActionEvent event) {
         if (event.getSource() == dashboard_btn) {
             Dashboard_form.setVisible(true);
             availableRoom_RoomFrom.setVisible(false);
             customer_From.setVisible(false);
+            records_form.setVisible(false);
             
             dashboardDisplayIncomeToday();
             dashboardDisplayBookToday();
@@ -690,14 +913,24 @@ public class DashboardController implements Initializable {
             Dashboard_form.setVisible(false);
             availableRoom_RoomFrom.setVisible(true);
             customer_From.setVisible(false);
+            records_form.setVisible(false);
             availableRoomsShowData();
             availableRoomsSearch();
         } else if (event.getSource() == customer_btn) {
             Dashboard_form.setVisible(false);
             availableRoom_RoomFrom.setVisible(false);
             customer_From.setVisible(true);
+            records_form.setVisible(false);
             customerShowData();
             customerSearch();
+        } else if (event.getSource() == records_btn) {
+            Dashboard_form.setVisible(false);
+            availableRoom_RoomFrom.setVisible(false);
+            customer_From.setVisible(false);
+            records_form.setVisible(true);
+            recordsShowData();
+            weeklyRecordsChart();
+            monthlyRecordsChart();
         }
     }
 
@@ -721,8 +954,8 @@ public class DashboardController implements Initializable {
                     y = event.getSceneY();
                 });
                 root.setOnMouseDragged((MouseEvent event) -> {
-                    stage.setX(event.getSceneX() - x);
-                    stage.setY(event.getSceneY() - y);
+                    stage.setX(event.getScreenX() - x);
+                    stage.setY(event.getScreenY() - y);
                 });
                 stage.initStyle(TRANSPARENT);
                 stage.setScene(scene);
@@ -762,11 +995,15 @@ public class DashboardController implements Initializable {
         // Initialize customer data
         customerShowData();
         customerSearch();
+        
+        // Initialize records data
+        recordsShowData();
+        weeklyRecordsChart();
+        monthlyRecordsChart();
     }
 
     @FXML
     private void customer_search(KeyEvent event) {
-        
         // Additional key event handling if needed
     }
 }

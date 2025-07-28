@@ -63,7 +63,8 @@
                                     <ImageView fitHeight="565.0" fitWidth="230.0" layoutX="-2.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@image/2.png" />
-                                       </image></ImageView>
+                                       </image>
+                                    </ImageView>
                                     <Button fx:id="dashboard_btn" layoutX="22.0" layoutY="288.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="170.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Dashboard" textFill="#401414">
                                        <graphic>
                                           <FontAwesomeIcon glyphName="DASHBOARD" size="1.2em" />
@@ -77,10 +78,18 @@
                                           <FontAwesomeIcon glyphName="CHECK_CIRCLE" />
                                        </graphic>
                                     </Button>
-                                    <Button fx:id="customer_btn" layoutX="23.0" layoutY="356.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="167.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Coustomers" textFill="#0a0a0a">
+                                    <Button fx:id="customer_btn" layoutX="23.0" layoutY="356.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="167.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Customers" textFill="#0a0a0a">
                                        <graphic>
                                           <FontAwesomeIcon glyphName="USERS" />
                                        </graphic>
+                                    </Button>
+                                    <Button fx:id="records_btn" layoutX="22.0" layoutY="390.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="30.0" prefWidth="170.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Records" textFill="#0a0a0a">
+                                       <graphic>
+                                          <FontAwesomeIcon glyphName="FILE_TEXT" size="1.2em" />
+                                       </graphic>
+                                       <font>
+                                          <Font name="System Bold" size="13.0" />
+                                       </font>
                                     </Button>
                                     <Button fx:id="logout_btn" layoutX="14.0" layoutY="512.0" minWidth="40.0" mnemonicParsing="false" onAction="#logout" prefHeight="28.0" prefWidth="40.0" styleClass="logout-btn" stylesheets="@dashboard.css">
                                        <graphic>
@@ -198,21 +207,25 @@
                                           <Label layoutX="19.0" layoutY="49.0" prefHeight="28.0" prefWidth="85.0" text="Room #:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
-                                             </font></Label>
+                                             </font>
+                                          </Label>
                                           <ComboBox fx:id="availableRoom_type" layoutX="84.0" layoutY="101.0" onAction="#availableRoomsRoomType" prefHeight="26.0" prefWidth="136.0" promptText="Choose" styleClass="combo-box" stylesheets="@dashboard.css" />
                                           <Label layoutX="23.0" layoutY="98.0" prefHeight="28.0" prefWidth="60.0" text=" Type:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
-                                             </font></Label>
+                                             </font>
+                                          </Label>
                                           <ComboBox fx:id="availableRoom_status" layoutX="86.0" layoutY="155.0" onAction="#availableRoomsStatus" prefHeight="26.0" prefWidth="140.0" promptText="Choose" styleClass="combo-box" stylesheets="@dashboard.css" />
                                           <Label layoutX="23.0" layoutY="154.0" prefHeight="28.0" prefWidth="60.0" text="Status:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
-                                             </font></Label>
+                                             </font>
+                                          </Label>
                                           <Label layoutX="33.0" layoutY="214.0" prefHeight="28.0" prefWidth="60.0" text="Price:">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
-                                             </font></Label>
+                                             </font>
+                                          </Label>
                                           <TextField fx:id="availableRoom_price" layoutX="87.0" layoutY="216.0" prefHeight="26.0" prefWidth="139.0" styleClass="textfield" stylesheets="@dashboard.css" />
                                           <Button fx:id="availableRoom_addbtn" layoutX="41.0" layoutY="289.0" mnemonicParsing="false" onAction="#availableRoomAdd" styleClass="add-btn" stylesheets="@dashboard.css" text="Add" />
                                           <Button fx:id="availableRoom_updatebtn" layoutX="187.0" layoutY="286.0" mnemonicParsing="false" onAction="#availableRoomsUpadte" styleClass="update-btn" stylesheets="@dashboard.css" text="Update" />
@@ -226,7 +239,8 @@
                                              <styleClass>
                                                 <String fx:value="search" />
                                                 <String fx:value="search-focused" />
-                                             </styleClass></TextField>
+                                             </styleClass>
+                                          </TextField>
                                           <FontAwesomeIcon glyphName="SEARCH" layoutX="38.0" layoutY="32.0" />
                                           <TableView fx:id="availableRoom_tableView" layoutX="14.0" layoutY="50.0" onMouseClicked="#availableRoomsSelectData" prefHeight="490.0" prefWidth="615.0" styleClass="nav-btn" stylesheets="@dashboard.css">
                                              <columns>
@@ -245,15 +259,15 @@
                                     <AnchorPane layoutX="52.0" layoutY="13.0" prefHeight="533.0" prefWidth="843.0">
                                        <children>
                                           <TableView fx:id="customer_TableView" layoutX="27.0" layoutY="47.0" onKeyTyped="#customer_search" prefHeight="470.0" prefWidth="798.0" stylesheets="@dashboard.css">
-                                            <columns>
-                                              <TableColumn fx:id="customer_CustomerNumber" prefWidth="114.0" text="Customer #" />
-                                              <TableColumn fx:id="customer_CustomerFName" minWidth="0.0" prefWidth="101.99996948242188" text="First Name" />
+                                             <columns>
+                                                <TableColumn fx:id="customer_CustomerNumber" prefWidth="114.0" text="Customer #" />
+                                                <TableColumn fx:id="customer_CustomerFName" minWidth="0.0" prefWidth="101.99996948242188" text="First Name" />
                                                 <TableColumn fx:id="customer_CustomerLName" prefWidth="93.0" text="Last Name" />
                                                 <TableColumn fx:id="customer_Customerphone" prefWidth="115.0" text="Phone #" />
                                                 <TableColumn fx:id="customer_CustomerTotalPayment" prefWidth="131.0" text="Total Payment" />
                                                 <TableColumn fx:id="customer_CustomerCheckIn" prefWidth="118.0" text="Check-in" />
                                                 <TableColumn fx:id="customer_CustomerCheckout" prefWidth="174.0" text="Check-out" />
-                                            </columns>
+                                             </columns>
                                              <styleClass>
                                                 <String fx:value="white-bg" />
                                                 <String fx:value="shadow" />
@@ -262,6 +276,42 @@
                                           </TableView>
                                           <TextField fx:id="customer_search" layoutX="34.0" layoutY="4.0" onAction="#customerSearch" onKeyTyped="#customerSearch" prefHeight="32.0" prefWidth="235.0" promptText="Search" styleClass="search" stylesheets="@dashboard.css" />
                                           <FontAwesomeIcon glyphName="SEARCH" layoutX="44.0" layoutY="24.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane fx:id="records_form" layoutX="-3.0" layoutY="14.0" prefHeight="567.0" prefWidth="928.0" style="-fx-background-color: #F0F8FF;" stylesheets="@dashboard.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <AnchorPane layoutX="52.0" layoutY="13.0" prefHeight="533.0" prefWidth="843.0">
+                                       <children>
+                                          <AreaChart fx:id="records_weeklyChart" layoutX="27.0" layoutY="10.0" prefHeight="200.0" prefWidth="370.0" title="Weekly Records">
+                                             <xAxis>
+                                                <CategoryAxis side="BOTTOM" />
+                                             </xAxis>
+                                             <yAxis>
+                                                <NumberAxis side="LEFT" />
+                                             </yAxis>
+                                          </AreaChart>
+                                          <AreaChart fx:id="records_monthlyChart" layoutX="425.0" layoutY="10.0" prefHeight="200.0" prefWidth="370.0" title="Monthly Records">
+                                             <xAxis>
+                                                <CategoryAxis side="BOTTOM" />
+                                             </xAxis>
+                                             <yAxis>
+                                                <NumberAxis side="LEFT" />
+                                             </yAxis>
+                                          </AreaChart>
+                                          <TableView fx:id="records_tableView" layoutX="27.0" layoutY="220.0" prefHeight="297.0" prefWidth="798.0" stylesheets="@dashboard.css">
+                                             <columns>
+                                                <TableColumn fx:id="records_Period" prefWidth="266.0" text="Period" />
+                                                <TableColumn fx:id="records_Bookings" prefWidth="266.0" text="Number of Bookings" />
+                                                <TableColumn fx:id="records_Income" prefWidth="266.0" text="Total Income ($)" />
+                                             </columns>
+                                             <styleClass>
+                                                <String fx:value="white-bg" />
+                                                <String fx:value="shadow" />
+                                                <String fx:value="textfield" />
+                                             </styleClass>
+                                          </TableView>
                                        </children>
                                     </AnchorPane>
                                  </children>
